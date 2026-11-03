@@ -291,7 +291,7 @@
   <h2 style="display:block">Récapitulatif de votre dossier</h2>
   <p class="aide">Relisez attentivement : ces informations seront imprimées telles quelles.</p>
   <div id="recapContenu"></div>
-  <div class="recapBoutons"><button class="second" id="recapRetour" type="button">Modifier</button><button class="second" id="recapImprimer" type="button" hidden>Enregistrer le récapitulatif (PDF)</button><button id="recapValider" type="button">Valider et télécharger mon dossier</button></div>
+  <div class="recapBoutons"><button class="second" id="recapRetour" type="button">Modifier</button><button id="recapValider" type="button">Valider et télécharger mon dossier</button></div>
 </div></div>
 
 <div id="visu" hidden><div id="visuTete"><b id="visuTitre"></b><button class="second" id="visuFermer" type="button">Fermer</button></div><div id="visuPages"></div></div>
@@ -672,11 +672,10 @@ function ouvrirRecap() {
   ligne("Logos de qualification", [b.rge.pac && "Quali’PAC", b.rge.pv && "Quali’PV", b.rge.qualibat && "Qualibat"].filter(Boolean).join(", "));
   t.push("</table><p class='aide' style='margin-top:14px'>Informations certifiées exactes par le client le " + new Date(b.horodatage).toLocaleString("fr-FR") + ".</p>");
   $("recapContenu").innerHTML = t.join("");
-  $("recapCode").hidden = true; $("recapImprimer").hidden = true; $("recapValider").hidden = false; $("recapRetour").textContent = "Modifier";
+  $("recapCode").hidden = true; $("recapValider").hidden = false; $("recapRetour").textContent = "Modifier";
   $("recap").hidden = false; $("recap").scrollTop = 0;
 }
 $("recapRetour").onclick = () => { $("recap").hidden = true; };
-$("recapImprimer").onclick = () => window.print();
 // dossier : texte encodé (pas lisible d'un coup d'œil), avec l'empreinte du contenu pour détecter un fichier abîmé
 async function encoder(texte) {
   const c = crypto.subtle, hex = u => [...u].map(x => x.toString(16).padStart(2, "0")).join("");
@@ -775,7 +774,7 @@ $("recapValider").onclick = async () => {
     a.download = fn; document.body.appendChild(a); a.click(); a.remove();
     $("recapCode").innerHTML = "✓ Dossier téléchargé : <b></b><br>Envoyez ce seul fichier à Imprigraphic par WhatsApp ou par e-mail, sans l’ouvrir ni le modifier.<br>Code de contrôle du dossier : <b></b>";
     $("recapCode").querySelectorAll("b")[0].textContent = fn; $("recapCode").querySelectorAll("b")[1].textContent = code;
-    $("recapCode").hidden = false; $("recapImprimer").hidden = false; $("recapValider").hidden = true; $("recapRetour").textContent = "Fermer";
+    $("recapCode").hidden = false; $("recapValider").hidden = true; $("recapRetour").textContent = "Fermer";
     $("recap").scrollTop = 0;
     message("Dossier téléchargé : envoyez " + fn + " à Imprigraphic.", "ok");
   } catch (x) { alert("Le dossier n’a pas pu être préparé sur cet appareil (" + x.message + "). Essayez avec un autre navigateur."); }
