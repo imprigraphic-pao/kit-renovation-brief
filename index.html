@@ -83,6 +83,7 @@
   .modele .voirModele { align-self: flex-start; margin-top: 6px; padding: 7px 12px; font-size: 13px; }
   #visuPages .legende { color: #fff; margin: 6px 0 -6px; font-weight: 600; font-size: 14px; }
   .ligne-choix .puce { border: 0; padding: 0; background: none; }
+  button.vider { margin-top: 14px; background: #fff; color: var(--err); border: 1.5px solid var(--err); padding: 9px 16px; }
   .marque { font-weight: 800; letter-spacing: .12em; font-size: 14px; color: var(--accent); margin-bottom: 14px; }
   .marque small { font-weight: 400; letter-spacing: 0; color: var(--doux); margin-left: 6px; }
   .siren { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 8px; }
@@ -124,6 +125,7 @@
   <div class="marque">IMPRIGRAPHIC <small>imprimeur</small></div>
   <h1>Votre kit commercial</h1>
   <p>Brochure, bon de commande et enveloppe à vos couleurs, mis en page et imprimés par Imprigraphic. Remplissez ce formulaire, puis envoyez à Imprigraphic le fichier de votre dossier (WhatsApp ou e-mail).</p>
+  <button type="button" class="vider" id="effacerHaut">Vider tous les champs</button>
 </header>
 <main>
   <section>
@@ -296,7 +298,7 @@
 
 <div class="barre"><div>
   <span id="message">Les champs * sont obligatoires. Votre saisie est gardée sur cet appareil.</span>
-  <span><button class="second" id="effacer" type="button">Tout effacer</button> <button id="telecharger" type="button">Télécharger mon dossier</button></span>
+  <span><button class="second" id="effacer" type="button">Vider tous les champs</button> <button id="telecharger" type="button">Télécharger mon dossier</button></span>
 </div></div>
 
 <script>
@@ -779,7 +781,8 @@ $("recapValider").onclick = async () => {
   } catch (x) { alert("Le dossier n’a pas pu être préparé sur cet appareil (" + x.message + "). Essayez avec un autre navigateur."); }
   finally { $("recapValider").disabled = false; }
 };
-$("effacer").onclick = () => { if (confirm("Effacer toute la saisie ?")) { try { localStorage.removeItem("briefKit"); } catch (e) {} location.reload(); } };
+$("effacerHaut").onclick = () => $("effacer").onclick();
+$("effacer").onclick = () => { if (confirm("Vider tous les champs ?\n\nToute votre saisie sera effacée sur cet appareil.")) { try { localStorage.removeItem("briefKit"); } catch (e) {} location.reload(); } };
 majCGV(); majPuces();
 </script>
 </body>
