@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Brief kit commercial</title>
+<title>Imprigraphic — Votre kit commercial</title>
 <style>
   :root { --fond: #f4f5f2; --carte: #fff; --texte: #1d2327; --doux: #66707a; --ligne: #dde1e4; --accent: #1f5f8b; --ok: #2e7d4f; --err: #b3261e; }
   * { box-sizing: border-box; }
@@ -47,7 +47,24 @@
   #message { font-size: 14px; }
   #message.err { color: var(--err); }
   #message.ok { color: var(--ok); }
-  .compteur { font-size: 13px; color: var(--doux); margin-top: 10px; }
+  .compteur { font-size: 14px; margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: #eaf5ee; color: var(--ok); font-weight: 600; }
+  .compteur.alerte { background: #fff4e0; color: #8a5300; border: 1px solid #e6b566; font-weight: 400; }
+  .compteur.alerte b { display: block; }
+  .ligne-choix .apercu { background: none; color: var(--accent); padding: 2px 8px; font-size: 13px; font-weight: 600; text-decoration: underline; flex: none; }
+  .ligne-choix .apercu + small { margin-left: 0; }
+  .fiche-case { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; cursor: pointer; }
+  #visu { position: fixed; inset: 0; z-index: 10; background: rgba(20,24,28,.82); display: flex; flex-direction: column; }
+  #visu[hidden] { display: none; }
+  #visuTete { background: #fff; padding: 10px 16px; display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+  #visuPages { overflow: auto; flex: 1; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  #visuPages img { width: 100%; max-width: 760px; background: #fff; display: block; }
+  .prerempli { border: 1px solid var(--ligne); border-radius: 8px; padding: 14px; background: #fafbfa; }
+  .prerempli h3 { font-size: 13px; margin: 12px 0 4px; }
+  .prerempli h3:first-child { margin-top: 0; }
+  .prerempli p { margin: 0; font-size: 13px; white-space: pre-wrap; }
+  .validation input { flex: none; margin-top: 4px; }
+  .validation { display: flex; gap: 8px; align-items: flex-start; font-weight: 600; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--ligne); cursor: pointer; }
+  .validation.invalide { color: var(--err); }
   .qte { width: 90px !important; padding: 6px 8px !important; text-align: right; }
   .modeles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 440px)); gap: 12px; }
   .modele { border: 2px solid var(--ligne); border-radius: 10px; padding: 10px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
@@ -56,18 +73,54 @@
   .modele img { width: 100%; border-radius: 4px; background: #eee; min-height: 60px; }
   .modele small { color: var(--doux); }
   .ligne-choix .puce { border: 0; padding: 0; background: none; }
+  .marque { font-weight: 800; letter-spacing: .12em; font-size: 14px; color: var(--accent); margin-bottom: 14px; }
+  .marque small { font-weight: 400; letter-spacing: 0; color: var(--doux); margin-left: 6px; }
+  .siren { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 8px; }
+  .siren label { flex: 0 1 240px; }
+  .siren button { padding: 9px 14px; }
+  h3.sous { font-size: 14px; margin: 20px 0 4px; }
+  #ordre { margin: 0; padding: 0; list-style: none; counter-reset: o; }
+  #ordre li { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--ligne); font-size: 14px; }
+  #ordre li .pos { color: var(--doux); font-size: 12px; margin-left: auto; white-space: nowrap; }
+  #ordre li.decale .pos { color: #8a5300; font-weight: 600; }
+  #ordre button { padding: 2px 9px; font-size: 13px; background: #e9ecef; color: var(--texte); }
+  #ordre button:disabled { opacity: .35; cursor: default; }
+  #cdf { display: flex; flex-wrap: wrap; gap: 14px 18px; }
+  .planche { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .planche > div { display: flex; box-shadow: 0 1px 3px rgba(0,0,0,.18); }
+  .planche.seule-d > div { margin-left: 52px; }
+  .pg { width: 52px; height: 74px; background: #eef0f2 center/cover no-repeat; font-size: 8px; line-height: 1.1; color: var(--doux); display: flex; align-items: center; justify-content: center; text-align: center; padding: 3px; overflow: hidden; }
+  .pg.fiche { background-color: #fff; }
+  .pg.notes { background: #fff; }
+  .pg + .pg { border-left: 1px solid #c9ced3; }
+  .pg.alerte { outline: 2px solid #e6a23c; outline-offset: -2px; }
+  .planche small { font-size: 10px; color: var(--doux); }
+  #recap { position: fixed; inset: 0; z-index: 20; background: rgba(20,24,28,.6); overflow: auto; padding: 24px 12px; }
+  #recap[hidden] { display: none; }
+  .recapBoite { background: #fff; max-width: 760px; margin: 0 auto; border-radius: 10px; padding: 22px; }
+  #recapContenu table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  #recapContenu th { text-align: left; font-weight: 600; width: 34%; padding: 5px 8px 5px 0; vertical-align: top; color: var(--doux); }
+  #recapContenu td { padding: 5px 0; white-space: pre-wrap; border-bottom: 1px solid var(--ligne); }
+  #recapContenu h3 { font-size: 14px; margin: 16px 0 4px; }
+  #recapCode { background: #eaf5ee; color: var(--ok); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; font-size: 14px; }
+  #recapCode b { font-family: ui-monospace, Menlo, monospace; font-size: 16px; letter-spacing: .05em; }
+  .recapBoutons { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-top: 18px; }
+  @media print { body > *:not(#recap) { display: none !important; } #recap { position: static; background: none; padding: 0; } .recapBoutons { display: none; } .recapBoite { padding: 0; } }
   @media (max-width: 560px) { h1 { font-size: 22px; } section { padding: 16px; } }
 </style>
 </head>
 <body>
 <header>
+  <div class="marque">IMPRIGRAPHIC <small>imprimeur</small></div>
   <h1>Votre kit commercial</h1>
-  <p>Brochure, bon de commande et enveloppe à vos couleurs. Remplissez ce formulaire, téléchargez votre brief, puis envoyez-le à votre imprimeur avec votre commande.</p>
+  <p>Brochure, bon de commande et enveloppe à vos couleurs, mis en page et imprimés par Imprigraphic. Remplissez ce formulaire, puis envoyez à Imprigraphic le fichier de votre dossier (WhatsApp ou e-mail).</p>
 </header>
 <main>
   <section>
     <h2><span>1</span>Votre société</h2>
-    <p class="aide">Tel qu'il doit apparaître sur les documents. Le nom s'imprimera en capitales.</p>
+    <p class="aide">Les informations sont reproduites telles que vous les saisissez. Le nom s'imprimera en capitales.</p>
+    <div class="siren"><label class="champ">SIREN *<small>9 chiffres</small><input type="text" id="SIREN" inputmode="numeric" required></label><button type="button" class="second" id="chercherSiren">Remplir depuis l’annuaire des entreprises</button></div>
+    <p class="aide" id="sirenEtat" hidden></p>
     <div class="grille">
       <label class="champ">Nom commercial *<input type="text" id="NOM" required></label>
       <label class="champ">Forme juridique *<select id="FORME"><option>SAS</option><option>SASU</option><option>SARL</option><option>EURL</option><option>SA</option><option>SNC</option><option>EI</option></select></label>
@@ -77,7 +130,6 @@
       <label class="champ">Ville *<input type="text" id="VILLE" required></label>
       <label class="champ">Téléphone *<input type="tel" id="TEL" required></label>
       <label class="champ">E-mail *<input type="email" id="EMAIL" required></label>
-      <label class="champ">SIREN *<small>9 chiffres</small><input type="text" id="SIREN" inputmode="numeric" required></label>
       <label class="champ">SIRET<small>facultatif — affiché à la place du SIREN</small><input type="text" id="SIRET" inputmode="numeric"></label>
       <label class="champ">Ville du RCS *<small>« RCS de … »</small><input type="text" id="RCS" required></label>
       <label class="champ">N° de TVA intracommunautaire<small>calculé depuis le SIREN si vide</small><input type="text" id="TVA"></label>
@@ -89,7 +141,12 @@
   <section>
     <h2><span>2</span>Logo et couleur</h2>
     <p class="aide">Logo en PDF, AI ou PNG haute définition de préférence (un JPG à fond blanc laisse un cadre).</p>
-    <div class="depot" id="depotLogo"><div id="logoVue">Cliquez ou déposez votre logo ici *</div><input type="file" id="logo" accept=".pdf,.ai,.eps,.png,.jpg,.jpeg,.svg" hidden></div>
+    <div class="choix" style="margin-bottom:12px">
+      <label class="puce on"><input type="radio" name="modeLogo" value="ici" checked> Ajouter mon logo ici (recommandé)</label>
+      <label class="puce"><input type="radio" name="modeLogo" value="part"> Je l’enverrai à part</label>
+    </div>
+    <div class="depot" id="depotLogo"><div id="logoVue"><b>Touchez ici pour choisir votre logo *</b><br><small>depuis vos Photos ou vos Fichiers (sur ordinateur : cliquez ou glissez le fichier)</small></div><input type="file" id="logo" accept="image/*,.pdf,.ai,.eps,.svg" hidden></div>
+    <p class="compteur alerte" id="logoPart" hidden><b>Non recommandé</b>Envoyez alors votre logo à Imprigraphic avec ce dossier, par WhatsApp ou e-mail, en fichier d’origine (PDF, AI ou PNG) et non en capture d’écran. Sans logo, la mise en page ne peut pas démarrer.</p>
     <p class="aide" style="margin-top:16px">Couleur principale (titres, bandeaux, carte) :</p>
     <div class="choix" style="margin-bottom:12px">
       <label class="puce on"><input type="radio" name="modeCouleur" value="studio" checked> Laisser le studio choisir</label>
@@ -107,7 +164,7 @@
       <label class="puce on"><input type="radio" name="photo" value="studio" checked> Laisser le studio choisir</label>
       <label class="puce"><input type="radio" name="photo" value="perso"> Envoyer ma photo</label>
     </div>
-    <div class="depot" id="depotPhoto" style="margin-top:12px; display:none"><div id="photoVue">Cliquez ou déposez votre photo (haute définition)</div><input type="file" id="photoFichier" accept=".jpg,.jpeg,.png,.tif,.tiff,.psd" hidden></div>
+    <div class="depot" id="depotPhoto" style="margin-top:12px; display:none"><div id="photoVue"><b>Touchez ici pour choisir votre photo</b><br><small>haute définition, depuis vos Photos ou vos Fichiers</small></div><input type="file" id="photoFichier" accept="image/*,.tif,.tiff,.psd" hidden></div>
   </section>
 
   <section>
@@ -120,9 +177,18 @@
 
   <section>
     <h2><span>5</span>Vos produits</h2>
-    <p class="aide">Les fiches produits insérées dans la brochure.</p>
+    <p class="aide">Les fiches produits insérées dans la brochure. Cliquez sur « Voir » pour les consulter.</p>
     <div id="fiches"></div>
     <div class="compteur" id="nbPages"></div>
+    <div id="blocOrdre" hidden>
+      <h3 class="sous">Ordre des fiches dans la brochure</h3>
+      <p class="aide">Utilisez les flèches pour changer l’ordre. Une fiche de 2 ou 4 pages doit commencer sur une page de gauche pour que ses pages se fassent face.</p>
+      <ol id="ordre"></ol>
+      <div id="alerteDouble" class="compteur alerte" hidden></div>
+      <h3 class="sous">Chemin de fer</h3>
+      <p class="aide">Aperçu de l’enchaînement des pages, en vis-à-vis comme dans la brochure ouverte.</p>
+      <div id="cdf"></div>
+    </div>
   </section>
 
   <section>
@@ -142,43 +208,65 @@
 
   <section>
     <h2><span>7</span>Conditions générales de vente</h2>
-    <p class="aide">Choisissez nos conditions toutes faites ou indiquez vos propres informations.</p>
+    <p class="aide">Validez les informations déjà remplies ou indiquez les vôtres.</p>
     <div class="choix" style="margin-bottom:12px">
-      <label class="puce on"><input type="radio" name="modeCGV" value="base" checked> Garder le modèle de base</label>
+      <label class="puce on"><input type="radio" name="modeCGV" value="base" checked> Valider les informations pré-remplies</label>
       <label class="puce"><input type="radio" name="modeCGV" value="manuel"> Rentrer mes informations</label>
     </div>
-    <p class="aide" id="aideCGVbase">Vos coordonnées sont reprises automatiquement. Le modèle prévoit comme partenaires installateurs HELIOVIE et ARTHUR LEROY, et comme médiateur CM2C. Vérifiez que cela correspond bien à votre société.</p>
+    <div class="prerempli" id="aideCGVbase">
+      <h3>Partenaires installateurs certifiés RGE</h3><p id="cgvPartenaires"></p>
+      <h3>Sous-traitants et qualifications</h3><p id="cgvSousTraitants"></p>
+      <h3>Médiateur de la consommation</h3><p id="cgvMediateur"></p>
+      <label class="validation" id="validation"><input type="checkbox" id="valideCGV"> Ces informations correspondent à ma société, je les valide</label>
+    </div>
     <div class="grille">
       <div class="large" id="blocCGVmanuel" hidden><div class="grille">
       <label class="champ large">Partenaires installateurs certifiés RGE<small>noms et qualifications</small><textarea id="PARTENAIRES_RGE"></textarea></label>
       <label class="champ large">Sous-traitants et qualifications<small>dénomination, SIRET, siège, travaux, n° de qualification</small><textarea id="CGV_SOUS_TRAITANTS"></textarea></label>
       <label class="champ large">Médiateur de la consommation<small>nom, adresse, site internet</small><textarea id="MEDIATEUR"></textarea></label>
       </div></div>
-      <p class="aide large" style="margin:0">À remplir dans tous les cas, ces informations sont propres à votre société :</p>
+      <p class="aide large" style="margin:12px 0 0">À remplir dans tous les cas, ces informations sont propres à votre société :</p>
       <label class="champ large">Vos qualifications RGE<small>nom et n° de chaque qualification</small><textarea id="RGE_SOCIETE"></textarea></label>
       <label class="champ large">Assurance décennale<small>assureur et n° de police</small><input type="text" id="ASSURANCE"></label>
-      <div class="large"><p class="aide" style="margin:0 0 6px">Logos à afficher sur le bon de commande (modèle B) :</p><div class="choix"><label class="puce"><input type="checkbox" id="rgePac"> Quali’PAC</label><label class="puce"><input type="checkbox" id="rgePv"> Quali’PV</label></div></div>
+      <label class="validation large" id="validationResp"><input type="checkbox" id="respCGV"> Je reconnais que les conditions générales de vente et les mentions légales (qualifications, assurance, sous-traitants, médiateur) relèvent de ma seule responsabilité. Imprigraphic les reproduit telles que je les ai saisies ou validées, sans en vérifier l’exactitude ni la conformité juridique.</label>
+      <div class="large"><p class="aide" style="margin:0 0 6px">Logos à afficher sur l’enveloppe et le bon de commande (cochez seulement les qualifications que vous détenez) :</p><div class="choix"><label class="puce"><input type="checkbox" id="rgePac"> Quali’PAC</label><label class="puce"><input type="checkbox" id="rgePv"> Quali’PV</label><label class="puce"><input type="checkbox" id="rgeQualibat"> Qualibat</label></div></div>
     </div>
+  </section>
+
+  <section>
+    <h2><span>8</span>Validation</h2>
+    <label class="validation" id="validationCertif" style="border:0;margin:0;padding:0"><input type="checkbox" id="certif"> Je certifie l’exactitude des informations saisies dans ce formulaire. Elles seront reproduites telles quelles sur les documents imprimés.</label>
   </section>
 </main>
 
+<div id="recap" hidden><div class="recapBoite">
+  <div id="recapCode" hidden></div>
+  <h2 style="display:block">Récapitulatif de votre dossier</h2>
+  <p class="aide">Relisez attentivement : ces informations seront imprimées telles quelles.</p>
+  <div id="recapContenu"></div>
+  <div class="recapBoutons"><button class="second" id="recapRetour" type="button">Modifier</button><button class="second" id="recapImprimer" type="button" hidden>Enregistrer le récapitulatif (PDF)</button><button id="recapValider" type="button">Valider et télécharger mon dossier</button></div>
+</div></div>
+
+<div id="visu" hidden><div id="visuTete"><b id="visuTitre"></b><button class="second" id="visuFermer" type="button">Fermer</button></div><div id="visuPages"></div></div>
+
 <div class="barre"><div>
   <span id="message">Les champs * sont obligatoires. Votre saisie est gardée sur cet appareil.</span>
-  <span><button class="second" id="effacer" type="button">Tout effacer</button> <button id="telecharger" type="button">Télécharger mon brief</button></span>
+  <span><button class="second" id="effacer" type="button">Tout effacer</button> <button id="telecharger" type="button">Télécharger mon dossier</button></span>
 </div></div>
 
 <script>
-const D = {"villes": ["Agen", "Aix-en-Provence", "Ajaccio", "Albi", "Alès", "Amiens", "Angers", "Angoulême", "Annecy", "Antibes", "Argenteuil", "Arles", "Arras", "Auch", "Aurillac", "Auxerre", "Avignon", "Bastia", "Bayonne", "Beauvais", "Belfort", "Besançon", "Biarritz", "Blois", "Bobigny", "Bordeaux", "Boulogne-Billancourt", "Boulogne-sur-Mer", "Bourg-en-Bresse", "Bourges", "Brest", "Brive-la-Gaillarde", "Béziers", "Caen", "Cahors", "Calais", "Cannes", "Carcassonne", "Cergy", "Chalon-sur-Saône", "Chambéry", "Charleville-Mézières", "Chartres", "Chaumont", "Cherbourg", "Cholet", "Châlons-en-Champagne", "Châteauroux", "Clermont-Ferrand", "Colmar", "Compiègne", "Créteil", "Digne-les-Bains", "Dijon", "Draguignan", "Dunkerque", "Foix", "Fréjus", "Gap", "Grenoble", "Guéret", "La Roche-sur-Yon", "La Rochelle", "Laon", "Laval", "Le Havre", "Le Mans", "Le Puy-en-Velay", "Lille", "Limoges", "Lorient", "Lyon", "Marseille", "Meaux", "Melun", "Mende", "Metz", "Mont-de-Marsan", "Montauban", "Montluçon", "Montpellier", "Montreuil", "Moulins", "Mulhouse", "Mâcon", "Nancy", "Nanterre", "Nantes", "Narbonne", "Neuilly-sur-Seine", "Nevers", "Nice", "Niort", "Nîmes", "Orléans", "Pantin", "Paris", "Pau", "Perpignan", "Poitiers", "Privas", "Périgueux", "Quimper", "Reims", "Rennes", "Rodez", "Rouen", "Saint-Brieuc", "Saint-Denis", "Saint-Lô", "Saint-Malo", "Saint-Nazaire", "Saint-Quentin", "Saint-Étienne", "Strasbourg", "Sète", "Tarbes", "Toulon", "Toulouse", "Tours", "Troyes", "Tulle", "Valence", "Valenciennes", "Vannes", "Verdun", "Versailles", "Vesoul", "Vichy", "Épinal", "Évreux", "Évry-Courcouronnes"], "defaut": ["Lille", "Saint-Lô", "Paris", "Metz", "Strasbourg", "Vannes", "Nantes", "Tours", "Auxerre", "Dijon", "Limoges", "Clermont-Ferrand", "Grenoble", "Bordeaux", "Toulouse", "Montpellier", "Aix-en-Provence", "Marseille"], "fiches": [{"fichier": "01 ITE - Isolation thermique exterieure.pdf", "titre": "ITE - Isolation thermique extérieure", "pages": 4}, {"fichier": "02 THOMSON - Climatisation R-ION.pdf", "titre": "THOMSON - Climatisation R-ION (air/air)", "pages": 3}, {"fichier": "03 THOMSON - Gardez le controle.pdf", "titre": "THOMSON - Gardez le contrôle (page complément)", "pages": 1}, {"fichier": "04 THOMSON - PAC Ether R32 split 65C.pdf", "titre": "THOMSON - PAC Ether R32 split 65 °C", "pages": 4}, {"fichier": "05 THALEOS - Chauffe-eau thermodynamique.pdf", "titre": "THALEOS - Chauffe-eau thermodynamique 200/270 L", "pages": 2}, {"fichier": "06 THOMSON - PAC Ether R290 80C.pdf", "titre": "THOMSON - PAC Ether R290 80 °C", "pages": 4}, {"fichier": "07 THOMSON - Panneau PV Ecosun 500.pdf", "titre": "THOMSON - Panneau photovoltaïque Ecosun 500", "pages": 2}, {"fichier": "08 SOLAREDGE - Gestion energetique.pdf", "titre": "SOLAREDGE - Gestion énergétique intelligente", "pages": 4}, {"fichier": "09 HOYMILES - Micro-onduleur HMS.pdf", "titre": "HOYMILES - Micro-onduleur HMS", "pages": 2}, {"fichier": "10 ATLANTIC - PAC Alfea Excellia.pdf", "titre": "ATLANTIC - PAC Alféa Excellia", "pages": 6}, {"fichier": "11 ATLANTIC - PAC Isilia S.pdf", "titre": "ATLANTIC - PAC Isilia S", "pages": 2}, {"fichier": "12 FRANCILIENNE - Panneau PV Mono 500W.pdf", "titre": "FRANCILIENNE ENERGY - Panneau PV Mono 500 W", "pages": 2}]};
+const D = {"villes": ["Agen", "Aix-en-Provence", "Ajaccio", "Albi", "Alès", "Amiens", "Angers", "Angoulême", "Annecy", "Antibes", "Argenteuil", "Arles", "Arras", "Auch", "Aurillac", "Auxerre", "Avignon", "Bastia", "Bayonne", "Beauvais", "Belfort", "Besançon", "Biarritz", "Blois", "Bobigny", "Bordeaux", "Boulogne-Billancourt", "Boulogne-sur-Mer", "Bourg-en-Bresse", "Bourges", "Brest", "Brive-la-Gaillarde", "Béziers", "Caen", "Cahors", "Calais", "Cannes", "Carcassonne", "Cergy", "Chalon-sur-Saône", "Chambéry", "Charleville-Mézières", "Chartres", "Chaumont", "Cherbourg", "Cholet", "Châlons-en-Champagne", "Châteauroux", "Clermont-Ferrand", "Colmar", "Compiègne", "Créteil", "Digne-les-Bains", "Dijon", "Draguignan", "Dunkerque", "Foix", "Fréjus", "Gap", "Grenoble", "Guéret", "La Roche-sur-Yon", "La Rochelle", "Laon", "Laval", "Le Havre", "Le Mans", "Le Puy-en-Velay", "Lille", "Limoges", "Lorient", "Lyon", "Marseille", "Meaux", "Melun", "Mende", "Metz", "Mont-de-Marsan", "Montauban", "Montluçon", "Montpellier", "Montreuil", "Moulins", "Mulhouse", "Mâcon", "Nancy", "Nanterre", "Nantes", "Narbonne", "Neuilly-sur-Seine", "Nevers", "Nice", "Niort", "Nîmes", "Orléans", "Pantin", "Paris", "Pau", "Perpignan", "Poitiers", "Privas", "Périgueux", "Quimper", "Reims", "Rennes", "Rodez", "Rouen", "Saint-Brieuc", "Saint-Denis", "Saint-Lô", "Saint-Malo", "Saint-Nazaire", "Saint-Quentin", "Saint-Étienne", "Strasbourg", "Sète", "Tarbes", "Toulon", "Toulouse", "Tours", "Troyes", "Tulle", "Valence", "Valenciennes", "Vannes", "Verdun", "Versailles", "Vesoul", "Vichy", "Épinal", "Évreux", "Évry-Courcouronnes"], "defaut": ["Lille", "Saint-Lô", "Paris", "Metz", "Strasbourg", "Vannes", "Nantes", "Tours", "Auxerre", "Dijon", "Limoges", "Clermont-Ferrand", "Grenoble", "Bordeaux", "Toulouse", "Montpellier", "Aix-en-Provence", "Marseille"], "fiches": [{"fichier": "01 ITE - Isolation thermique exterieure.pdf", "titre": "ITE - Isolation thermique extérieure", "pages": 4, "id": "01"}, {"fichier": "02 THOMSON - Climatisation R-ION.pdf", "titre": "THOMSON - Climatisation R-ION (air/air)", "pages": 3, "id": "02"}, {"fichier": "03 THOMSON - Gardez le controle.pdf", "titre": "THOMSON - Gardez le contrôle (page complément)", "pages": 1, "id": "03"}, {"fichier": "04 THOMSON - PAC Ether R32 split 65C.pdf", "titre": "THOMSON - PAC Ether R32 split 65 °C", "pages": 4, "id": "04"}, {"fichier": "05 THALEOS - Chauffe-eau thermodynamique.pdf", "titre": "THALEOS - Chauffe-eau thermodynamique 200/270 L", "pages": 2, "id": "05"}, {"fichier": "06 THOMSON - PAC Ether R290 80C.pdf", "titre": "THOMSON - PAC Ether R290 80 °C", "pages": 4, "id": "06"}, {"fichier": "07 THOMSON - Panneau PV Ecosun 500.pdf", "titre": "THOMSON - Panneau photovoltaïque Ecosun 500", "pages": 2, "id": "07"}, {"fichier": "08 SOLAREDGE - Gestion energetique.pdf", "titre": "SOLAREDGE - Gestion énergétique intelligente", "pages": 4, "id": "08"}, {"fichier": "09 HOYMILES - Micro-onduleur HMS.pdf", "titre": "HOYMILES - Micro-onduleur HMS", "pages": 2, "id": "09"}, {"fichier": "10 ATLANTIC - PAC Alfea Excellia.pdf", "titre": "ATLANTIC - PAC Alféa Excellia", "pages": 6, "id": "10"}, {"fichier": "11 ATLANTIC - PAC Isilia S.pdf", "titre": "ATLANTIC - PAC Isilia S", "pages": 2, "id": "11"}, {"fichier": "12 FRANCILIENNE - Panneau PV Mono 500W.pdf", "titre": "FRANCILIENNE ENERGY - Panneau PV Mono 500 W", "pages": 2, "id": "12"}], "cgv": {"PARTENAIRES_RGE": "HELIOVIE (QualiPV / QualiPAC — photovoltaïque, pompes à chaleur, ballons thermodynamiques) et ARTHUR LEROY (QUALIBAT — isolation thermique)", "CGV_SOUS_TRAITANTS": "• VOS DEMARCHES ECO ENERGY, SIREN 882 604 374, SIRET 882 604 374 00018, sise 5 rue Saint-Louis, 94410 Saint-Maurice (démarches administratives).\n• HELIOVIE (SAS), SIRET 90781511200038, sise 13 avenue Jean Moulin, 93240 Stains (installation : photovoltaïque, pompes à chaleur et chauffe-eau thermodynamiques, ventilation mécanique).\n• Autre installateur éventuel (en remplacement ou en complément d’HELIOVIE) : …………………………………………………………… (dénomination, forme juridique, SIRET, siège — à compléter le cas échéant).\n• Sous-traitant chargé de l’isolation thermique : la société ARTHUR LEROY, immatriculée sous le numéro SIREN 940 304 520, sise rue du Fief-Briand, 49440 Candé (travaux d’isolation thermique par l’intérieur et par l’extérieur).\nQualification RGE du sous-traitant installateur HELIOVIE : QualiPV 36, n° QPV/66511 (valable du 15 janvier 2026 au 15 janvier 2027) ; QualiPAC module chauffage et ECS, n° QPAC/66511 (valable du 27 janvier 2026 au 27 janvier 2027) ; Ventilation + (probatoire), n° VPLUS/66511 (valable du 29 mai 2026 au 29 mai 2027), qualifications délivrées par Qualit’EnR. Les justificatifs correspondants sont annexés aux présentes.\nQualification RGE de l’autre installateur éventuel : ………………………………………………………………… (qualification + n° — à compléter le cas échéant ; justificatif à annexer).\nQualification RGE du sous-traitant chargé de l’isolation (ARTHUR LEROY) : QUALIBAT 7122 (isolation thermique par l’intérieur) et QUALIBAT 7131 (isolation thermique par l’extérieur, technicité courante) ; les justificatifs correspondants, en cours de validité, sont annexés aux présentes.\nJustificatifs annexés : certificat QualiPV 36 HELIOVIE (n° QPV/66511), certificat QualiPAC HELIOVIE (n° QPAC/66511) et certificat Ventilation + HELIOVIE (n° VPLUS/66511), ainsi que les certificats QUALIBAT 7122 et 7131 de la société ARTHUR LEROY.", "MEDIATEUR": "CM2C – Centre de la Médiation de la Consommation de Conciliateurs de Justice, 49 rue de Ponthieu, 75008 Paris, site internet : https://www.cm2c.net, courrier électronique : declarer-un-litige@cm2c.net. Le médiateur peut également être saisi en ligne via le formulaire disponible à l’adresse https://www.cm2c.net/declarer-un-litige.php."}};
 const CHAMPS = ["NOM","FORME","CAPITAL","ADRESSE","CP","VILLE","TEL","EMAIL","SIREN","SIRET","RCS","TVA","QUALITE","REPRESENTANT","PARTENAIRES_RGE","CGV_SOUS_TRAITANTS","RGE_SOCIETE","ASSURANCE","MEDIATEUR"];
+const modeLogo = () => document.querySelector("input[name=modeLogo]:checked").value;
 const modeCGV = () => document.querySelector("input[name=modeCGV]:checked").value;
 function majCGV() { const m = modeCGV() === "manuel"; $("blocCGVmanuel").hidden = !m; $("aideCGVbase").hidden = m; }
 const OBLIG = ["NOM","CAPITAL","ADRESSE","CP","VILLE","TEL","EMAIL","SIREN","RCS","REPRESENTANT"];
 const NUANCIER = ["#1f5f8b","#1d3a6e","#0071bc","#3fb0e0","#14a39a","#5cb030","#2f7d32","#8cc63f","#f7c600","#f39200","#e2231a","#8e1b3a","#e5508f","#6a3d9a","#a68b45","#c2622d","#4a4a4a","#111111"];
 const $ = id => document.getElementById(id);
-let logo = null, photo = null;
+let logo = null, photo = null, ordre = [];
 
 function sauver() {
-  const s = {cgv: modeCGV(), champs: {}, couleur: $("couleur").value, villes: villesChoisies(), fiches: fichesChoisies(), docs: docsChoisis(), photo: document.querySelector("input[name=photo]:checked").value, modeCouleur: document.querySelector("input[name=modeCouleur]:checked").value, quantites: quantites(), rge: {pac: $("rgePac").checked, pv: $("rgePv").checked}, modeleBDC: document.querySelector("input[name=modeleBDC]:checked").value};
+  const s = {cgv: modeCGV(), champs: {}, couleur: $("couleur").value, villes: villesChoisies(), fiches: fichesChoisies(), docs: docsChoisis(), photo: document.querySelector("input[name=photo]:checked").value, modeCouleur: document.querySelector("input[name=modeCouleur]:checked").value, quantites: quantites(), rge: {pac: $("rgePac").checked, pv: $("rgePv").checked, qualibat: $("rgeQualibat").checked}, cgvValide: $("valideCGV").checked, respCGV: $("respCGV").checked, ordre: ordre, modeLogo: modeLogo(), modeleBDC: document.querySelector("input[name=modeleBDC]:checked").value};
   CHAMPS.forEach(k => s.champs[k] = $(k).value);
   try { localStorage.setItem("briefKit", JSON.stringify(s)); } catch (e) {}
 }
@@ -199,8 +287,26 @@ function villesChoisies() { return [...document.querySelectorAll("#villes input:
 $("filtreVilles").oninput = e => { const q = e.target.value.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); document.querySelectorAll("#villes .puce").forEach(l => { const t = l.textContent.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); l.style.display = !q || t.includes(q) || l.querySelector("input").checked ? "" : "none"; }); };
 
 // fiches
-D.fiches.forEach(f => { const l = document.createElement("label"); l.className = "ligne-choix"; l.innerHTML = `<input type="checkbox" value="${f.fichier}"> ${f.titre} <small>${f.pages} page${f.pages > 1 ? "s" : ""}</small>`; l.dataset.pages = f.pages; $("fiches").appendChild(l); });
-function fichesChoisies() { return [...document.querySelectorAll("#fiches input:checked")].map(i => i.value); }
+D.fiches.forEach(f => {
+  const l = document.createElement("div"); l.className = "ligne-choix"; l.dataset.pages = f.pages;
+  l.innerHTML = `<label class="fiche-case"><input type="checkbox" value="${f.fichier}"> ${f.titre}</label><button class="apercu" type="button">Voir</button><small>${f.pages} page${f.pages > 1 ? "s" : ""}</small>`;
+  l.querySelector(".apercu").onclick = () => ouvrirFiche(f);
+  $("fiches").appendChild(l);
+});
+function ouvrirFiche(f) {
+  $("visuTitre").textContent = f.titre; $("visuPages").innerHTML = "";
+  for (let i = 1; i <= f.pages; i++) { const im = new Image(); im.alt = f.titre + ", page " + i; im.src = "apercus/" + f.id + "-" + i + ".jpg"; $("visuPages").appendChild(im); }
+  $("visu").hidden = false; $("visuPages").scrollTop = 0;
+}
+$("visuFermer").onclick = () => { $("visu").hidden = true; };
+$("visu").onclick = e => { if (e.target.id === "visu" || e.target.id === "visuPages") $("visu").hidden = true; };
+document.addEventListener("keydown", e => { if (e.key === "Escape") $("visu").hidden = true; });
+$("cgvPartenaires").textContent = D.cgv.PARTENAIRES_RGE; $("cgvSousTraitants").textContent = D.cgv.CGV_SOUS_TRAITANTS; $("cgvMediateur").textContent = D.cgv.MEDIATEUR;
+$("valideCGV").onchange = () => $("validation").classList.remove("invalide");
+$("respCGV").onchange = () => $("validationResp").classList.remove("invalide");
+$("certif").onchange = () => $("validationCertif").classList.remove("invalide");
+function fichesChoisies() { const c = [...document.querySelectorAll("#fiches input:checked")].map(i => i.value); ordre = ordre.filter(f => c.includes(f)); c.forEach(f => { if (!ordre.includes(f)) ordre.push(f); }); return ordre.slice(); }
+const FICHE = {}; D.fiches.forEach(f => FICHE[f.fichier] = f);
 function quantites() { const q = {}; document.querySelectorAll(".qte").forEach(i => { const n = i.value.replace(/\D/g, ""); if (n) q[i.dataset.doc] = +n; }); return q; }
 function docsChoisis() { return [...document.querySelectorAll("input[name=doc]:checked")].map(i => i.value); }
 
@@ -210,23 +316,84 @@ if (s0) {
   if (s0.couleur) $("couleur").value = s0.couleur;
   document.querySelectorAll("#villes input").forEach(i => i.checked = (s0.villes || []).includes(i.value));
   document.querySelectorAll("#fiches input").forEach(i => i.checked = (s0.fiches || []).includes(i.value));
+  ordre = (s0.ordre || s0.fiches || []).filter(f => FICHE[f]);
   document.querySelectorAll("input[name=doc]").forEach(i => i.checked = (s0.docs || []).includes(i.value));
   if (s0.cgv === "manuel") document.querySelector("input[name=modeCGV][value=manuel]").checked = true;
   if (s0.photo === "perso") document.querySelector("input[name=photo][value=perso]").checked = true;
   if (s0.quantites) document.querySelectorAll(".qte").forEach(i => { if (s0.quantites[i.dataset.doc]) i.value = s0.quantites[i.dataset.doc]; });
   if (s0.modeleBDC) { const m = document.querySelector("input[name=modeleBDC][value=" + s0.modeleBDC + "]"); if (m) m.checked = true; }
-  if (s0.rge) { $("rgePac").checked = !!s0.rge.pac; $("rgePv").checked = !!s0.rge.pv; }
+  if (s0.rge) { $("rgePac").checked = !!s0.rge.pac; $("rgePv").checked = !!s0.rge.pv; $("rgeQualibat").checked = !!s0.rge.qualibat; }
+  $("valideCGV").checked = !!s0.cgvValide; $("respCGV").checked = !!s0.respCGV;
+  if (s0.modeLogo === "part") document.querySelector("input[name=modeLogo][value=part]").checked = true;
   if (s0.modeCouleur === "perso") document.querySelector("input[name=modeCouleur][value=perso]").checked = true;
 } else {
   document.querySelectorAll("#villes input").forEach(i => i.checked = D.defaut.includes(i.value));
 }
-function majPuces() { document.querySelectorAll("input[name=modeCGV]").forEach(i => i.closest(".puce").classList.toggle("on", i.checked)); document.querySelectorAll(".modele").forEach(l => l.classList.toggle("on", l.querySelector("input").checked)); document.querySelectorAll(".qte").forEach(i => { const c = document.querySelector("input[name=doc][value=" + i.dataset.doc + "]").checked; i.disabled = !c; }); document.querySelectorAll(".puce").forEach(l => l.classList.toggle("on", l.querySelector("input").checked)); $("depotPhoto").style.display = document.querySelector("input[name=photo]:checked").value === "perso" ? "" : "none"; $("blocCouleur").style.display = document.querySelector("input[name=modeCouleur]:checked").value === "perso" ? "" : "none"; }
+function majPuces() { document.querySelectorAll("input[name=modeCGV]").forEach(i => i.closest(".puce").classList.toggle("on", i.checked)); document.querySelectorAll(".modele").forEach(l => l.classList.toggle("on", l.querySelector("input").checked)); document.querySelectorAll(".qte").forEach(i => { const c = document.querySelector("input[name=doc][value=" + i.dataset.doc + "]").checked; i.disabled = !c; }); document.querySelectorAll(".puce").forEach(l => l.classList.toggle("on", l.querySelector("input").checked)); $("depotPhoto").style.display = document.querySelector("input[name=photo]:checked").value === "perso" ? "" : "none"; $("depotLogo").style.display = modeLogo() === "ici" ? "" : "none"; $("logoPart").hidden = modeLogo() === "ici"; $("blocCouleur").style.display = document.querySelector("input[name=modeCouleur]:checked").value === "perso" ? "" : "none"; }
+function alertePages() {
+  let p = 10; fichesChoisies().forEach(f => p += FICHE[f].pages);
+  const m = p % 4 ? 4 - p % 4 : 0;
+  return {pages: p, manque: m, exces: m ? 4 - m : 0};
+}
 function majCompteurs() {
   $("nbVilles").textContent = villesChoisies().length + " ville(s) sélectionnée(s)";
-  let p = 10; document.querySelectorAll("#fiches input:checked").forEach(i => p += +i.closest("label").dataset.pages);
-  const r = p % 4 ? 4 - p % 4 : 0;
-  $("nbPages").textContent = "Brochure : " + (p + r) + " pages" + (r ? " (dont " + r + " page(s) de notes : une brochure agrafée compte un multiple de 4 pages)" : "");
+  const a = alertePages(), c = $("nbPages");
+  c.hidden = !docsChoisis().includes("brochure");
+  c.className = "compteur" + (a.manque ? " alerte" : "");
+  if (a.manque) c.innerHTML = "<b>⚠ Brochure : " + a.pages + " pages, ce n’est pas un multiple de 4.</b>Une brochure agrafée compte 4, 8, 12… pages. Ajoutez " + a.manque + " page(s) de fiches" + (a.exces ? " ou retirez-en " + a.exces : "") + ". Sinon, " + a.manque + " page(s) de notes seront ajoutées (" + (a.pages + a.manque) + " pages).";
+  else c.textContent = "✓ Brochure : " + a.pages + " pages, multiple de 4.";
+  majOrdre();
 }
+// pages de la brochure : 5 pages avant les fiches, les fiches dans l'ordre choisi, 4 pages après, notes, 4e de couverture
+function chemin() {
+  const pages = [{t: "Couverture"}, {t: "Présentation"}, {t: "Présentation"}, {t: "Présentation"}, {t: "Garanties"}], debuts = [];
+  fichesChoisies().forEach(f => { const fi = FICHE[f]; debuts.push({f: fi, page: pages.length + 1}); for (let i = 1; i <= fi.pages; i++) pages.push({fiche: fi, n: i}); });
+  ["Financement", "Votre projet", "Parrainage", "Service administratif"].forEach(t => pages.push({t}));
+  const m = (pages.length + 1) % 4 ? 4 - (pages.length + 1) % 4 : 0;
+  for (let i = 0; i < m; i++) pages.push({t: "Notes", notes: true});
+  pages.push({t: "4e de couverture"});
+  return {pages, debuts};
+}
+function majOrdre() {
+  const bloc = $("blocOrdre"), ch = chemin(), liste = fichesChoisies();
+  bloc.hidden = !liste.length || !docsChoisis().includes("brochure");
+  if (bloc.hidden) return;
+  const ol = $("ordre"); ol.innerHTML = "";
+  const decalees = [];
+  ch.debuts.forEach((d, i) => {
+    const fin = d.page + d.f.pages - 1, droite = d.page % 2 === 1, mal = droite && d.f.pages > 1 && d.f.pages % 2 === 0;
+    if (mal) decalees.push(d.f.titre);
+    const li = document.createElement("li"); if (mal) li.className = "decale";
+    li.innerHTML = `<button type="button" title="Monter" ${i ? "" : "disabled"}>↑</button><button type="button" title="Descendre" ${i < liste.length - 1 ? "" : "disabled"}>↓</button><span></span><span class="pos"></span>`;
+    li.children[2].textContent = d.f.titre;
+    li.children[3].textContent = (d.f.pages > 1 ? "pages " + d.page + " à " + fin : "page " + d.page) + (mal ? " ⚠ commence à droite" : "");
+    li.children[0].onclick = () => { deplacer(i, -1); };
+    li.children[1].onclick = () => { deplacer(i, 1); };
+    ol.appendChild(li);
+  });
+  const al = $("alerteDouble"); al.hidden = !decalees.length;
+  if (decalees.length) al.innerHTML = "<b>⚠ Doubles pages décalées</b>" + decalees.map(t => "« " + t + " »").join(", ") + (decalees.length > 1 ? " commencent" : " commence") + " sur une page de droite : ses pages ne se feront pas face. Changez l’ordre, ou placez une fiche d’une page (ou de 3 pages) juste avant.";
+  const cdf = $("cdf"); cdf.innerHTML = "";
+  const P = ch.pages;
+  for (let i = 0; i < P.length; ) {
+    const pl = document.createElement("div"), duo = document.createElement("div"), nums = [];
+    pl.className = "planche";
+    const groupe = i === 0 || i === P.length - 1 && P.length % 2 === 0 ? [i] : [i, i + 1];
+    if (i === 0) pl.classList.add("seule-d");
+    groupe.forEach(k => {
+      const pg = P[k], d = document.createElement("div"); d.className = "pg"; nums.push(k + 1);
+      if (pg.fiche) {
+        d.classList.add("fiche"); d.style.backgroundImage = "url('apercus/" + pg.fiche.id + "-" + pg.n + ".jpg')"; d.title = pg.fiche.titre + " — page " + pg.n + "/" + pg.fiche.pages;
+        const deb = ch.debuts.find(x => x.f === pg.fiche);
+        if ((deb.page % 2 === 1) && pg.fiche.pages > 1 && pg.fiche.pages % 2 === 0) d.classList.add("alerte");
+      } else { d.textContent = pg.t; if (pg.notes) d.classList.add("notes"); }
+      duo.appendChild(d);
+    });
+    pl.appendChild(duo); const sm = document.createElement("small"); sm.textContent = nums.join("-"); pl.appendChild(sm);
+    cdf.appendChild(pl); i += groupe.length;
+  }
+}
+function deplacer(i, sens) { const j = i + sens; if (j < 0 || j >= ordre.length) return; [ordre[i], ordre[j]] = [ordre[j], ordre[i]]; majCompteurs(); sauver(); }
 document.addEventListener("change", () => { majCGV(); majPuces(); majCompteurs(); sauver(); });
 document.addEventListener("input", e => { if (e.target.matches(".qte")) { e.target.classList.remove("invalide"); sauver(); return; } if (e.target.matches("input[type=text],input[type=email],input[type=tel],textarea")) { e.target.classList.remove("invalide"); sauver(); } });
 majCouleur(); majPuces(); majCompteurs();
@@ -245,6 +412,37 @@ function depot(zone, input, max, quand) {
 depot($("depotLogo"), $("logo"), 15, (o, f) => { logo = o; $("depotLogo").classList.add("plein"); $("logoVue").innerHTML = (/^image\/(png|jpe?g|svg)/.test(f.type) ? `<img src="${o.data}" alt="">` : "") + "✔ " + f.name; $("depotLogo").classList.remove("invalide"); });
 depot($("depotPhoto"), $("photoFichier"), 40, (o, f) => { photo = o; $("depotPhoto").classList.add("plein"); $("photoVue").innerHTML = (/^image\/(png|jpe?g)/.test(f.type) ? `<img src="${o.data}" alt="">` : "") + "✔ " + f.name; });
 
+// SIREN : annuaire officiel des entreprises (recherche-entreprises.api.gouv.fr)
+const FORMES = {"5710": "SAS", "5720": "SASU", "5499": "SARL", "5498": "EURL", "5410": "SARL", "5599": "SA", "5505": "SA", "5202": "SNC", "1000": "EI"};
+function titre(t) { return String(t || "").toLowerCase().replace(/(^|[\s'’-])(\S)/g, (m, a, b) => a + b.toUpperCase()); }
+$("chercherSiren").onclick = async () => {
+  const siren = $("SIREN").value.replace(/\D/g, ""), e = $("sirenEtat"); e.hidden = false; e.style.color = "";
+  if (siren.length !== 9 || !luhn(siren)) { e.textContent = "Saisissez d’abord un SIREN valide (9 chiffres)."; e.style.color = "var(--err)"; $("SIREN").classList.add("invalide"); return; }
+  e.textContent = "Recherche dans l’annuaire des entreprises…";
+  try {
+    const r = await fetch("https://recherche-entreprises.api.gouv.fr/search?q=" + siren + "&page=1&per_page=1"), j = await r.json();
+    const ent = (j.results || []).find(x => x.siren === siren);
+    if (!ent) { e.textContent = "SIREN introuvable dans l’annuaire : remplissez les champs à la main."; e.style.color = "var(--err)"; return; }
+    const sg = ent.siege || {}, rempli = [];
+    function mettre(id, v) { if (v) { $(id).value = v; $(id).classList.remove("invalide"); rempli.push(id); } }
+    mettre("NOM", ent.nom_raison_sociale || ent.nom_complet);
+    const f = FORMES[ent.nature_juridique]; if (f) { $("FORME").value = f; rempli.push("FORME"); }
+    mettre("ADRESSE", [sg.numero_voie, sg.indice_repetition, sg.type_voie, sg.libelle_voie].filter(Boolean).join(" ") && titre([sg.numero_voie, sg.indice_repetition, sg.type_voie, sg.libelle_voie].filter(Boolean).join(" ")) + (sg.complement_adresse ? ", " + titre(sg.complement_adresse) : ""));
+    mettre("CP", sg.code_postal); mettre("VILLE", titre(sg.libelle_commune));
+    if (!$("SIRET").value) mettre("SIRET", sg.siret);
+    if (!$("TVA").value) mettre("TVA", [].concat(ent.tva || [])[0] || "");
+    const dg = (ent.dirigeants || []).find(x => x.type_dirigeant === "personne physique");
+    if (dg) {
+      mettre("REPRESENTANT", titre((dg.prenoms || "").split(" ")[0]) + " " + String(dg.nom || "").toUpperCase());
+      const q = (dg.qualite || "").toLowerCase(), opt = q.includes("gérant") ? "Gérant" : q.includes("directeur général") ? "Directeur général" : q.includes("président") ? "Président" : "";
+      if (opt) { $("QUALITE").value = opt; rempli.push("QUALITE"); }
+    }
+    sauver();
+    e.style.color = "var(--ok)";
+    e.textContent = "✓ " + rempli.length + " champ(s) remplis depuis l’annuaire. Vérifiez-les et complétez le capital et la ville du RCS : tout sera imprimé tel quel.";
+  } catch (x) { e.textContent = "Annuaire indisponible pour le moment : remplissez les champs à la main."; e.style.color = "var(--err)"; }
+};
+
 // contrôles
 function luhn(n) { let s = 0; for (let i = 0; i < n.length; i++) { let d = +n[n.length - 1 - i]; if (i % 2) { d *= 2; if (d > 9) d -= 9; } s += d; } return s % 10 === 0; }
 function message(t, c) { $("message").textContent = t; $("message").className = c || ""; }
@@ -256,25 +454,85 @@ function verifier() {
   const siret = $("SIRET").value.replace(/\D/g, "");
   if (siret && (siret.length !== 14 || siret.slice(0, 9) !== siren)) { $("SIRET").classList.add("invalide"); err.push("SIRET invalide"); }
   if ($("EMAIL").value && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($("EMAIL").value)) { $("EMAIL").classList.add("invalide"); err.push("e-mail"); }
-  if (!logo) { $("depotLogo").classList.add("invalide"); err.push("logo"); }
+  if (!logo && modeLogo() === "ici") { $("depotLogo").classList.add("invalide"); err.push("logo"); }
   if (!docsChoisis().length) err.push("documents");
+  if (!$("respCGV").checked) { $("validationResp").classList.add("invalide"); err.push("responsabilité CGV"); }
+  if (!$("certif").checked) { $("validationCertif").classList.add("invalide"); err.push("certification"); }
+  if (modeCGV() === "base" && !$("valideCGV").checked) { $("validation").classList.add("invalide"); err.push("validation des CGV"); }
   document.querySelectorAll(".qte").forEach(i => { if (!i.disabled && !i.value.replace(/\D/g, "")) { i.classList.add("invalide"); err.push("quantité"); } });
   return err;
 }
 $("telecharger").onclick = () => {
   const err = verifier();
   if (err.length) { message("À compléter : " + err.length + " point(s) en rouge" + (err.includes("logo") ? " (dont le logo)" : "") + ".", "err"); const p = document.querySelector(".invalide"); if (p) p.scrollIntoView({behavior: "smooth", block: "center"}); return; }
+  const ap = alertePages();
+  if (docsChoisis().includes("brochure") && ap.manque && !confirm("Votre brochure fait " + ap.pages + " pages, ce n’est pas un multiple de 4.\n\n" + ap.manque + " page(s) de notes seront ajoutées pour arriver à " + (ap.pages + ap.manque) + " pages.\n\nOK : continuer. Annuler : revoir les fiches.")) { $("nbPages").scrollIntoView({behavior: "smooth", block: "center"}); return; }
+  const dec = [...document.querySelectorAll("#ordre li.decale")].length;
+  if (docsChoisis().includes("brochure") && dec && !confirm(dec + " fiche(s) commencent sur une page de droite : leurs pages ne se feront pas face.\n\nOK : continuer quand même. Annuler : revoir l’ordre des fiches.")) { $("blocOrdre").scrollIntoView({behavior: "smooth", block: "center"}); return; }
+  ouvrirRecap();
+};
+function construireDossier() {
   const societe = {}; CHAMPS.forEach(k => societe[k] = $(k).value.trim());
   const hex = $("couleur").value, rvb = [1, 3, 5].map(i => parseInt(hex.substr(i, 2), 16));
-  const brief = {type: "kit-renovation-brief", version: 1, cgv: modeCGV(), date: new Date().toISOString().slice(0, 10), societe, logo,
+  return {type: "kit-renovation-brief", version: 2, cgv: modeCGV(), date: new Date().toISOString().slice(0, 10), horodatage: new Date().toISOString(), societe, logo: modeLogo() === "ici" ? logo : null, logoAPart: modeLogo() === "part",
     photo: document.querySelector("input[name=photo]:checked").value === "perso" ? photo : null,
-    couleurRVB: document.querySelector("input[name=modeCouleur]:checked").value === "perso" ? rvb : null, villes: villesChoisies(), fiches: fichesChoisies(), documents: docsChoisis(), quantites: quantites(), rge: {pac: $("rgePac").checked, pv: $("rgePv").checked},
-    modeleBDC: document.querySelector("input[name=modeleBDC]:checked").value};
-  const nom = societe.NOM.toUpperCase().replace(/[^A-Z0-9À-Ü]+/g, "_").replace(/^_|_$/g, "");
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(brief)], {type: "application/json"}));
-  a.download = "BRIEF_" + nom + ".json"; document.body.appendChild(a); a.click(); a.remove();
-  message("Brief téléchargé : envoyez le fichier BRIEF_" + nom + ".json à votre imprimeur.", "ok");
+    couleurRVB: document.querySelector("input[name=modeCouleur]:checked").value === "perso" ? rvb : null, villes: villesChoisies(), fiches: fichesChoisies(), documents: docsChoisis(), quantites: quantites(), rge: {pac: $("rgePac").checked, pv: $("rgePv").checked, qualibat: $("rgeQualibat").checked}, cgvValide: modeCGV() === "base" && $("valideCGV").checked,
+    modeleBDC: document.querySelector("input[name=modeleBDC]:checked").value, certifie: $("certif").checked, responsabiliteCGV: $("respCGV").checked};
+}
+const LIBELLES = {NOM: "Nom commercial", FORME: "Forme juridique", CAPITAL: "Capital social", ADRESSE: "Adresse du siège", CP: "Code postal", VILLE: "Ville", TEL: "Téléphone", EMAIL: "E-mail", SIREN: "SIREN", SIRET: "SIRET", RCS: "Ville du RCS", TVA: "N° de TVA", QUALITE: "Représentant (qualité)", REPRESENTANT: "Représentant (nom)", PARTENAIRES_RGE: "Partenaires installateurs RGE", CGV_SOUS_TRAITANTS: "Sous-traitants", MEDIATEUR: "Médiateur", RGE_SOCIETE: "Vos qualifications RGE", ASSURANCE: "Assurance décennale"};
+const DOCS = {brochure: "Brochure A4", bdc: "Bon de commande A4", pochette: "Enveloppe 229 x 324"};
+let dossier = null;
+function ouvrirRecap() {
+  dossier = construireDossier();
+  const b = dossier, t = [], esc = x => String(x == null ? "" : x).replace(/[&<>]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;"})[c]);
+  const ligne = (k, v) => t.push("<tr><th>" + esc(k) + "</th><td>" + esc(v || "—") + "</td></tr>");
+  t.push("<h3>Société</h3><table>");
+  ["NOM", "FORME", "CAPITAL", "ADRESSE", "CP", "VILLE", "TEL", "EMAIL", "SIREN", "SIRET", "RCS", "TVA", "QUALITE", "REPRESENTANT"].forEach(k => ligne(LIBELLES[k], b.societe[k]));
+  t.push("</table><h3>Visuels</h3><table>");
+  ligne("Logo", b.logo ? b.logo.nom : "envoyé à part par le client"); ligne("Couleur", b.couleurRVB ? $("couleur").value.toUpperCase() : "choisie par le studio"); ligne("Photo de couverture", b.photo ? b.photo.nom : "choisie par le studio");
+  ligne("Villes de la carte", b.villes.join(", "));
+  t.push("</table><h3>Documents</h3><table>");
+  b.documents.forEach(d => ligne(DOCS[d], (b.quantites[d] || "") + " ex."));
+  if (b.documents.includes("bdc")) ligne("Modèle de bon de commande", b.modeleBDC === "solea" ? "Modèle B" : "Modèle A");
+  if (b.documents.includes("brochure")) { const ch = chemin(); ligne("Brochure", ch.pages.length + " pages"); ch.debuts.forEach(d => ligne("Fiche p. " + d.page + (d.f.pages > 1 ? "-" + (d.page + d.f.pages - 1) : ""), d.f.titre)); }
+  t.push("</table><h3>Conditions générales de vente</h3><table>");
+  if (b.cgv === "base") { ligne("Informations pré-remplies", "validées"); ligne(LIBELLES.PARTENAIRES_RGE, D.cgv.PARTENAIRES_RGE); ligne(LIBELLES.CGV_SOUS_TRAITANTS, D.cgv.CGV_SOUS_TRAITANTS); ligne(LIBELLES.MEDIATEUR, D.cgv.MEDIATEUR); }
+  else ["PARTENAIRES_RGE", "CGV_SOUS_TRAITANTS", "MEDIATEUR"].forEach(k => ligne(LIBELLES[k], b.societe[k]));
+  ["RGE_SOCIETE", "ASSURANCE"].forEach(k => ligne(LIBELLES[k], b.societe[k]));
+  ligne("Responsabilité", "Le client reconnaît que les CGV et mentions légales relèvent de sa seule responsabilité ; Imprigraphic les reproduit sans en vérifier l’exactitude ni la conformité juridique.");
+  ligne("Logos de qualification", [b.rge.pac && "Quali’PAC", b.rge.pv && "Quali’PV", b.rge.qualibat && "Qualibat"].filter(Boolean).join(", "));
+  t.push("</table><p class='aide' style='margin-top:14px'>Informations certifiées exactes par le client le " + new Date(b.horodatage).toLocaleString("fr-FR") + ".</p>");
+  $("recapContenu").innerHTML = t.join("");
+  $("recapCode").hidden = true; $("recapImprimer").hidden = true; $("recapValider").hidden = false; $("recapRetour").textContent = "Modifier";
+  $("recap").hidden = false; $("recap").scrollTop = 0;
+}
+$("recapRetour").onclick = () => { $("recap").hidden = true; };
+$("recapImprimer").onclick = () => window.print();
+// dossier : texte encodé (pas lisible d'un coup d'œil), avec l'empreinte du contenu pour détecter un fichier abîmé
+async function encoder(texte) {
+  const c = crypto.subtle, hex = u => [...u].map(x => x.toString(16).padStart(2, "0")).join("");
+  const clair = new TextEncoder().encode(texte);
+  let b = ""; for (let i = 0; i < clair.length; i += 32768) b += String.fromCharCode.apply(null, clair.subarray(i, i + 32768));
+  const fichier = "IMPRIGRAPHIC\n3\n" + hex(new Uint8Array(await c.digest("SHA-256", clair))) + "\n" + btoa(b) + "\n";
+  return {fichier, empreinte: hex(new Uint8Array(await c.digest("SHA-256", new TextEncoder().encode(fichier))))};
+}
+$("recapValider").onclick = async () => {
+  $("recapValider").disabled = true;
+  try {
+    const r = await encoder(JSON.stringify(dossier));
+    const nom = dossier.societe.NOM.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Z0-9]+/g, "_").replace(/^_|_$/g, "");
+    const fn = "IMPRIGRAPHIC_" + nom + "_" + dossier.date + ".impri";
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([r.fichier], {type: "application/octet-stream"}));
+    a.download = fn; document.body.appendChild(a); a.click(); a.remove();
+    const code = r.empreinte.slice(0, 12).toUpperCase().match(/.{4}/g).join("-");
+    $("recapCode").innerHTML = "✓ Dossier téléchargé : <b></b><br>Envoyez ce fichier à Imprigraphic par WhatsApp ou par e-mail, sans l’ouvrir ni le modifier.<br>Code de contrôle du dossier : <b></b>";
+    $("recapCode").querySelectorAll("b")[0].textContent = fn; $("recapCode").querySelectorAll("b")[1].textContent = code;
+    $("recapCode").hidden = false; $("recapImprimer").hidden = false; $("recapValider").hidden = true; $("recapRetour").textContent = "Fermer";
+    $("recap").scrollTop = 0;
+    message("Dossier téléchargé : envoyez " + fn + " à Imprigraphic.", "ok");
+  } catch (x) { alert("Le dossier n’a pas pu être préparé sur cet appareil (" + x.message + "). Essayez avec un autre navigateur."); }
+  finally { $("recapValider").disabled = false; }
 };
 $("effacer").onclick = () => { if (confirm("Effacer toute la saisie ?")) { try { localStorage.removeItem("briefKit"); } catch (e) {} location.reload(); } };
 majCGV(); majPuces();
