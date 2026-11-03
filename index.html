@@ -8,6 +8,7 @@
 <style>
   :root { --fond: #f4f5f2; --carte: #fff; --texte: #1d2327; --doux: #66707a; --ligne: #dde1e4; --accent: #1f5f8b; --ok: #2e7d4f; --err: #b3261e; }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body { margin: 0; background: var(--fond); color: var(--texte); font: 15px/1.5 -apple-system, "Segoe UI", Roboto, sans-serif; }
   header { padding: 32px 16px 8px; max-width: 860px; margin: 0 auto; }
   h1 { font-size: 26px; margin: 0 0 6px; }
@@ -20,7 +21,7 @@
   .grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px 16px; }
   label.champ { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 600; }
   label.champ small { font-weight: 400; color: var(--doux); }
-  input[type=text], input[type=email], input[type=tel], select, textarea { font: inherit; padding: 9px 10px; border: 1px solid var(--ligne); border-radius: 7px; background: #fff; width: 100%; }
+  input[type=text], input[type=email], input[type=tel], input[type=date], select, textarea { font: inherit; font-size: 16px; padding: 11px 10px; border: 1px solid var(--ligne); border-radius: 7px; background: #fff; width: 100%; }
   textarea { min-height: 70px; resize: vertical; }
   input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
   .invalide { border-color: var(--err) !important; background: #fff6f5 !important; }
@@ -62,7 +63,7 @@
   .prerempli h3 { font-size: 13px; margin: 12px 0 4px; }
   .prerempli h3:first-child { margin-top: 0; }
   .prerempli p { margin: 0; font-size: 13px; white-space: pre-wrap; }
-  .validation input { flex: none; margin-top: 4px; }
+  .validation input { flex: none; margin-top: 3px; width: 20px; height: 20px; }
   .validation { display: flex; gap: 8px; align-items: flex-start; font-weight: 600; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--ligne); cursor: pointer; }
   .validation.invalide { color: var(--err); }
   .qte { width: 90px !important; padding: 6px 8px !important; text-align: right; }
@@ -72,6 +73,12 @@
   .modele input { display: none; }
   .modele img { width: 100%; border-radius: 4px; background: #eee; min-height: 60px; }
   .modele small { color: var(--doux); }
+  .carteST { border: 1px solid var(--ligne); border-radius: 8px; padding: 12px; margin: 0 0 12px; background: #fafbfa; }
+  .carteST .tete { display: flex; justify-content: space-between; align-items: center; font-weight: 600; margin-bottom: 8px; }
+  .carteST .tete button, .ligneQ button { background: none; color: var(--err); padding: 2px 6px; font-size: 13px; text-decoration: underline; }
+  .ligneQ { display: grid; grid-template-columns: 2fr 1.3fr 1.2fr auto; gap: 8px; align-items: end; margin-bottom: 8px; }
+  @media (max-width: 560px) { .ligneQ { grid-template-columns: 1fr 1fr; } }
+  #listeST + button, #listeQ + button { margin-bottom: 4px; }
   .modele .voirModele { align-self: flex-start; margin-top: 6px; padding: 7px 12px; font-size: 13px; }
   #visuPages .legende { color: #fff; margin: 6px 0 -6px; font-weight: 600; font-size: 14px; }
   .ligne-choix .puce { border: 0; padding: 0; background: none; }
@@ -124,14 +131,14 @@
     <div class="siren"><label class="champ">SIREN *<small>9 chiffres</small><input type="text" id="SIREN" inputmode="numeric" required></label><button type="button" class="second" id="chercherSiren">Remplir depuis l’annuaire des entreprises</button></div>
     <p class="aide" id="sirenEtat" hidden></p>
     <div class="grille">
-      <label class="champ">Nom commercial *<input type="text" id="NOM" required></label>
+      <label class="champ">Nom commercial *<input type="text" id="NOM" autocomplete="organization" required></label>
       <label class="champ">Forme juridique *<select id="FORME"><option>SAS</option><option>SASU</option><option>SARL</option><option>EURL</option><option>SA</option><option>SNC</option><option>EI</option></select></label>
       <label class="champ">Capital social *<input type="text" id="CAPITAL" placeholder="ex. 10 000 €" required></label>
-      <label class="champ large">Adresse du siège *<input type="text" id="ADRESSE" placeholder="n° et rue" required></label>
-      <label class="champ">Code postal *<input type="text" id="CP" inputmode="numeric" maxlength="5" required></label>
-      <label class="champ">Ville *<input type="text" id="VILLE" required></label>
-      <label class="champ">Téléphone *<input type="tel" id="TEL" required></label>
-      <label class="champ">E-mail *<input type="email" id="EMAIL" required></label>
+      <label class="champ large">Adresse du siège *<input type="text" id="ADRESSE" placeholder="n° et rue" autocomplete="street-address" required></label>
+      <label class="champ">Code postal *<input type="text" id="CP" inputmode="numeric" maxlength="5" autocomplete="postal-code" required></label>
+      <label class="champ">Ville *<input type="text" id="VILLE" autocomplete="address-level2" required></label>
+      <label class="champ">Téléphone *<input type="tel" id="TEL" autocomplete="tel" required></label>
+      <label class="champ">E-mail *<input type="email" id="EMAIL" autocomplete="email" required></label>
       <label class="champ">SIRET<small>facultatif — affiché à la place du SIREN</small><input type="text" id="SIRET" inputmode="numeric"></label>
       <label class="champ">Ville du RCS *<small>« RCS de … »</small><input type="text" id="RCS" required></label>
       <label class="champ">N° de TVA intracommunautaire<small>calculé depuis le SIREN si vide</small><input type="text" id="TVA"></label>
@@ -209,34 +216,69 @@
   </section>
 
   <section>
-    <h2><span>7</span>Conditions générales de vente</h2>
-    <p class="aide">Validez les informations déjà remplies ou indiquez les vôtres.</p>
+    <h2><span>7</span>Livraison et contact</h2>
+    <p class="aide">Pour la livraison de votre commande et le suivi avec Imprigraphic.</p>
+    <div class="grille">
+      <label class="champ">Contact pour la commande *<small>prénom et nom</small><input type="text" id="CMD_CONTACT" autocomplete="name"></label>
+      <label class="champ">Téléphone du contact *<input type="tel" id="CMD_TEL" autocomplete="tel"></label>
+      <label class="champ">E-mail du contact<input type="email" id="CMD_EMAIL" autocomplete="email"></label>
+    </div>
+    <label class="validation"><input type="checkbox" id="livSiege" checked> Livraison à l’adresse du siège</label>
+    <div class="grille" id="blocLiv" hidden style="margin-top:12px">
+      <label class="champ large">Adresse de livraison *<input type="text" id="LIV_ADRESSE"></label>
+      <label class="champ">Code postal *<input type="text" id="LIV_CP" inputmode="numeric" maxlength="5"></label>
+      <label class="champ">Ville *<input type="text" id="LIV_VILLE"></label>
+    </div>
+    <label class="champ" style="margin-top:12px">Précisions pour la livraison<small>horaires, accès, personne sur place…</small><textarea id="LIV_INFOS"></textarea></label>
+  </section>
+
+  <section>
+    <h2><span>8</span>Conditions générales de vente</h2>
+    <p class="aide">Ces informations sont imprimées dans les conditions générales de votre bon de commande. Chaque bloc doit être validé.</p>
     <div class="choix" style="margin-bottom:12px">
       <label class="puce on"><input type="radio" name="modeCGV" value="base" checked> Valider les informations pré-remplies</label>
       <label class="puce"><input type="radio" name="modeCGV" value="manuel"> Rentrer mes informations</label>
     </div>
     <div class="prerempli" id="aideCGVbase">
       <h3>Partenaires installateurs certifiés RGE</h3><p id="cgvPartenaires"></p>
-      <h3>Sous-traitants et qualifications</h3><p id="cgvSousTraitants"></p>
-      <h3>Médiateur de la consommation</h3><p id="cgvMediateur"></p>
-      <label class="validation" id="validation"><input type="checkbox" id="valideCGV"> Ces informations correspondent à ma société, je les valide</label>
+      <label class="validation"><input type="checkbox" class="valBase" data-k="PARTENAIRES_RGE"> Je valide ces partenaires pour ma société</label>
+      <h3 style="margin-top:16px">Sous-traitants et qualifications</h3><p id="cgvSousTraitants"></p>
+      <label class="validation"><input type="checkbox" class="valBase" data-k="CGV_SOUS_TRAITANTS"> Je valide ces sous-traitants pour ma société</label>
+      <h3 style="margin-top:16px">Médiateur de la consommation</h3><p id="cgvMediateur"></p>
+      <label class="validation"><input type="checkbox" class="valBase" data-k="MEDIATEUR"> Je valide ce médiateur pour ma société</label>
     </div>
+    <div id="blocCGVmanuel" hidden>
+      <h3 class="sous">Vos sous-traitants</h3>
+      <label class="validation" style="border:0;margin:0 0 8px;padding:0"><input type="checkbox" id="aucunST"> Je n’ai aucun sous-traitant</label>
+      <div id="listeST"></div>
+      <button type="button" class="second" id="ajoutST">+ Ajouter un sous-traitant</button>
+      <h3 class="sous">Médiateur de la consommation</h3>
+      <div class="grille">
+        <label class="champ">Nom du médiateur *<input type="text" class="cgvc" data-bloc="med" id="med_nom"></label>
+        <label class="champ">Adresse *<input type="text" class="cgvc" data-bloc="med" id="med_adresse"></label>
+        <label class="champ">Site internet<input type="text" class="cgvc" data-bloc="med" id="med_site"></label>
+        <label class="champ">E-mail<input type="text" class="cgvc" data-bloc="med" id="med_email"></label>
+      </div>
+      <label class="validation"><input type="checkbox" class="conf" id="conf_med"> Je confirme les informations du médiateur</label>
+    </div>
+    <h3 class="sous">Vos qualifications RGE</h3>
+    <p class="aide">Celles de votre société, à remplir dans tous les cas.</p>
+    <div id="listeQ"></div>
+    <button type="button" class="second" id="ajoutQ">+ Ajouter une qualification</button>
+    <label class="validation"><input type="checkbox" class="conf" id="conf_q"> Je confirme mes qualifications RGE</label>
+    <h3 class="sous">Assurance décennale</h3>
     <div class="grille">
-      <div class="large" id="blocCGVmanuel" hidden><div class="grille">
-      <label class="champ large">Partenaires installateurs certifiés RGE<small>noms et qualifications</small><textarea id="PARTENAIRES_RGE"></textarea></label>
-      <label class="champ large">Sous-traitants et qualifications<small>dénomination, SIRET, siège, travaux, n° de qualification</small><textarea id="CGV_SOUS_TRAITANTS"></textarea></label>
-      <label class="champ large">Médiateur de la consommation<small>nom, adresse, site internet</small><textarea id="MEDIATEUR"></textarea></label>
-      </div></div>
-      <p class="aide large" style="margin:12px 0 0">À remplir dans tous les cas, ces informations sont propres à votre société :</p>
-      <label class="champ large">Vos qualifications RGE<small>nom et n° de chaque qualification</small><textarea id="RGE_SOCIETE"></textarea></label>
-      <label class="champ large">Assurance décennale<small>assureur et n° de police</small><input type="text" id="ASSURANCE"></label>
-      <label class="validation large" id="validationResp"><input type="checkbox" id="respCGV"> Je reconnais que les conditions générales de vente et les mentions légales (qualifications, assurance, sous-traitants, médiateur) relèvent de ma seule responsabilité. Imprigraphic les reproduit telles que je les ai saisies ou validées, sans en vérifier l’exactitude ni la conformité juridique.</label>
-      <div class="large"><p class="aide" style="margin:0 0 6px">Logos à afficher sur l’enveloppe et le bon de commande (cochez seulement les qualifications que vous détenez) :</p><div class="choix"><label class="puce"><input type="checkbox" id="rgePac"> Quali’PAC</label><label class="puce"><input type="checkbox" id="rgePv"> Quali’PV</label><label class="puce"><input type="checkbox" id="rgeQualibat"> Qualibat</label></div></div>
+      <label class="champ">Assureur *<input type="text" class="cgvc" data-bloc="ass" id="ass_nom"></label>
+      <label class="champ">N° de police *<input type="text" class="cgvc" data-bloc="ass" id="ass_num"></label>
     </div>
+    <label class="validation"><input type="checkbox" class="conf" id="conf_ass"> Je confirme mon assurance décennale</label>
+    <input type="hidden" id="PARTENAIRES_RGE"><input type="hidden" id="CGV_SOUS_TRAITANTS"><input type="hidden" id="MEDIATEUR"><input type="hidden" id="RGE_SOCIETE"><input type="hidden" id="ASSURANCE">
+    <label class="validation" id="validationResp"><input type="checkbox" id="respCGV"> Je reconnais que les conditions générales de vente et les mentions légales (qualifications, assurance, sous-traitants, médiateur) relèvent de ma seule responsabilité. Imprigraphic les reproduit telles que je les ai saisies ou validées, sans en vérifier l’exactitude ni la conformité juridique.</label>
+    <div style="margin-top:12px"><p class="aide" style="margin:0 0 6px">Logos à afficher sur l’enveloppe et le bon de commande (cochez seulement les qualifications que vous détenez) :</p><div class="choix"><label class="puce"><input type="checkbox" id="rgePac"> Quali’PAC</label><label class="puce"><input type="checkbox" id="rgePv"> Quali’PV</label><label class="puce"><input type="checkbox" id="rgeQualibat"> Qualibat</label></div></div>
   </section>
 
   <section>
-    <h2><span>8</span>Validation</h2>
+    <h2><span>9</span>Validation</h2>
     <label class="validation" id="validationCertif" style="border:0;margin:0;padding:0"><input type="checkbox" id="certif"> Je certifie l’exactitude des informations saisies dans ce formulaire. Elles seront reproduites telles quelles sur les documents imprimés.</label>
   </section>
 </main>
@@ -261,15 +303,19 @@ const D = {"villes": ["Agen", "Aix-en-Provence", "Ajaccio", "Albi", "Alès", "Am
 const CHAMPS = ["NOM","FORME","CAPITAL","ADRESSE","CP","VILLE","TEL","EMAIL","SIREN","SIRET","RCS","TVA","QUALITE","REPRESENTANT","PARTENAIRES_RGE","CGV_SOUS_TRAITANTS","RGE_SOCIETE","ASSURANCE","MEDIATEUR"];
 const modeLogo = () => document.querySelector("input[name=modeLogo]:checked").value;
 const modeCGV = () => document.querySelector("input[name=modeCGV]:checked").value;
-function majCGV() { const m = modeCGV() === "manuel"; $("blocCGVmanuel").hidden = !m; $("aideCGVbase").hidden = m; }
+function majCGV() { const m = modeCGV() === "manuel"; $("blocCGVmanuel").hidden = !m; $("aideCGVbase").hidden = m; if ($("listeST")) $("listeST").style.display = $("ajoutST").style.display = $("aucunST").checked ? "none" : ""; }
+const COMMANDE = ["CMD_CONTACT","CMD_TEL","CMD_EMAIL","LIV_ADRESSE","LIV_CP","LIV_VILLE","LIV_INFOS"];
 const OBLIG = ["NOM","CAPITAL","ADRESSE","CP","VILLE","TEL","EMAIL","SIREN","RCS","REPRESENTANT"];
 const NUANCIER = ["#1f5f8b","#1d3a6e","#0071bc","#3fb0e0","#14a39a","#5cb030","#2f7d32","#8cc63f","#f7c600","#f39200","#e2231a","#8e1b3a","#e5508f","#6a3d9a","#a68b45","#c2622d","#4a4a4a","#111111"];
 const $ = id => document.getElementById(id);
 let logo = null, photo = null, ordre = [];
 
 function sauver() {
-  const s = {cgv: modeCGV(), champs: {}, couleur: $("couleur").value, villes: villesChoisies(), fiches: fichesChoisies(), docs: docsChoisis(), photo: document.querySelector("input[name=photo]:checked").value, modeCouleur: document.querySelector("input[name=modeCouleur]:checked").value, quantites: quantites(), rge: {pac: $("rgePac").checked, pv: $("rgePv").checked, qualibat: $("rgeQualibat").checked}, cgvValide: $("valideCGV").checked, respCGV: $("respCGV").checked, ordre: ordre, modeLogo: modeLogo(), modeleBDC: document.querySelector("input[name=modeleBDC]:checked").value};
+  if (!$("listeQ")) return;
+  composerCGV();
+  const s = {cgvD: lireCGV(), commande: {}, livSiege: $("livSiege").checked, cgv: modeCGV(), champs: {}, couleur: $("couleur").value, villes: villesChoisies(), fiches: fichesChoisies(), docs: docsChoisis(), photo: document.querySelector("input[name=photo]:checked").value, modeCouleur: document.querySelector("input[name=modeCouleur]:checked").value, quantites: quantites(), rge: {pac: $("rgePac").checked, pv: $("rgePv").checked, qualibat: $("rgeQualibat").checked}, respCGV: $("respCGV").checked, ordre: ordre, modeLogo: modeLogo(), modeleBDC: document.querySelector("input[name=modeleBDC]:checked").value};
   CHAMPS.forEach(k => s.champs[k] = $(k).value);
+  COMMANDE.forEach(k => s.commande[k] = $(k).value);
   try { localStorage.setItem("briefKit", JSON.stringify(s)); } catch (e) {}
 }
 function restaurer() {
@@ -277,6 +323,66 @@ function restaurer() {
   return s;
 }
 const s0 = restaurer();
+
+// --- CGV : saisie champ par champ, chaque bloc confirmé ---
+const esc1 = x => String(x == null ? "" : x).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"})[c]);
+const dateFr = v => v ? v.split("-").reverse().join("/") : "";
+function ajouterST(st) {
+  st = st || {}; const d = document.createElement("div"); d.className = "carteST";
+  const f = (k, lib, plus) => `<label class="champ">${lib}<input type="${k === "valid" ? "date" : "text"}" class="cgvc st" data-k="${k}" value="${esc1(st[k])}" ${plus || ""}></label>`;
+  d.innerHTML = `<div class="tete"><span></span><button type="button">Retirer</button></div><div class="grille">` +
+    f("denom", "Dénomination *") + f("forme", "Forme juridique") + f("siret", "SIRET *", 'inputmode="numeric"') + f("adresse", "Adresse du siège *") +
+    `<label class="champ large">Travaux réalisés *<small>ex. installation photovoltaïque, pompes à chaleur</small><input type="text" class="cgvc st" data-k="travaux" value="${esc1(st.travaux)}"></label>` +
+    f("qualif", "Qualification RGE<small>ex. QualiPV 36</small>") + f("num", "N° de qualification") + f("valid", "Valable jusqu’au") +
+    `</div><label class="validation"><input type="checkbox" class="conf confST" ${st.ok ? "checked" : ""}> Je confirme les informations de ce sous-traitant</label>`;
+  d.querySelector(".tete button").onclick = () => { d.remove(); numeroterST(); sauver(); };
+  $("listeST").appendChild(d); numeroterST();
+}
+function numeroterST() { document.querySelectorAll(".carteST").forEach((c, i) => c.querySelector(".tete span").textContent = "Sous-traitant " + (i + 1)); }
+function ajouterQ(q) {
+  q = q || {}; const d = document.createElement("div"); d.className = "ligneQ";
+  d.innerHTML = `<label class="champ">Qualification *<input type="text" class="cgvc q" data-bloc="q" data-k="nom" value="${esc1(q.nom)}" placeholder="ex. QualiPAC"></label><label class="champ">N° *<input type="text" class="cgvc q" data-bloc="q" data-k="num" value="${esc1(q.num)}"></label><label class="champ">Valable jusqu’au<input type="date" class="cgvc q" data-bloc="q" data-k="valid" value="${esc1(q.valid)}"></label><button type="button">Retirer</button>`;
+  d.querySelector("button").onclick = () => { d.remove(); $("conf_q").checked = false; sauver(); };
+  $("listeQ").appendChild(d);
+}
+$("ajoutST").onclick = () => { ajouterST(); $("aucunST").checked = false; sauver(); };
+$("ajoutQ").onclick = () => { ajouterQ(); $("conf_q").checked = false; sauver(); };
+function lireCGV() {
+  const v = id => $(id).value.trim();
+  return {
+    st: [...document.querySelectorAll(".carteST")].map(c => { const o = {ok: c.querySelector(".confST").checked}; c.querySelectorAll("input.st").forEach(i => o[i.dataset.k] = i.value.trim()); return o; }),
+    aucunST: $("aucunST").checked,
+    med: {nom: v("med_nom"), adresse: v("med_adresse"), site: v("med_site"), email: v("med_email")}, confMed: $("conf_med").checked,
+    q: [...document.querySelectorAll(".ligneQ")].map(l => { const o = {}; l.querySelectorAll("input").forEach(i => o[i.dataset.k] = i.value.trim()); return o; }).filter(o => o.nom || o.num || o.valid), confQ: $("conf_q").checked,
+    ass: {nom: v("ass_nom"), num: v("ass_num")}, confAss: $("conf_ass").checked,
+    valBase: Object.fromEntries([...document.querySelectorAll(".valBase")].map(c => [c.dataset.k, c.checked]))
+  };
+}
+function liste(a) { return a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " et " + a[a.length - 1]; }
+// textes imprimés dans les CGV, au même format que le modèle
+function composerCGV() {
+  const c = lireCGV();
+  $("RGE_SOCIETE").value = liste(c.q.filter(q => q.nom).map(q => q.nom + (q.num ? " (n° " + q.num + (q.valid ? ", valable jusqu’au " + dateFr(q.valid) : "") + ")" : "")));
+  $("ASSURANCE").value = c.ass.nom ? c.ass.nom + (c.ass.num ? " police n° " + c.ass.num : "") : "";
+  if (modeCGV() !== "manuel") { $("PARTENAIRES_RGE").value = ""; $("CGV_SOUS_TRAITANTS").value = ""; $("MEDIATEUR").value = ""; return; }
+  const st = c.aucunST ? [] : c.st.filter(x => x.denom);
+  const lignes = st.map(x => "• " + x.denom + (x.forme ? " (" + x.forme + ")" : "") + (x.siret ? ", SIRET " + x.siret : "") + (x.adresse ? ", sise " + x.adresse : "") + (x.travaux ? " (" + x.travaux + ")" : "") + ".");
+  const qs = st.filter(x => x.qualif).map(x => "Qualification RGE de " + x.denom + " : " + x.qualif + (x.num ? ", n° " + x.num : "") + (x.valid ? " (valable jusqu’au " + dateFr(x.valid) + ")" : "") + ".");
+  if (qs.length) qs.push("Les justificatifs correspondants sont annexés aux présentes.");
+  $("CGV_SOUS_TRAITANTS").value = c.aucunST ? "néant." : lignes.concat(qs).join("\n");
+  $("PARTENAIRES_RGE").value = liste(st.filter(x => x.qualif).map(x => x.denom + " (" + x.qualif + (x.travaux ? " — " + x.travaux : "") + ")"));
+  $("MEDIATEUR").value = [c.med.nom, c.med.adresse, c.med.site && "site internet : " + c.med.site, c.med.email && "courrier électronique : " + c.med.email].filter(Boolean).join(", ");
+}
+// une information modifiée doit être confirmée à nouveau
+document.addEventListener("input", e => {
+  const t = e.target; if (!t.classList || !t.classList.contains("cgvc")) return;
+  t.classList.remove("invalide");
+  const carte = t.closest(".carteST"); if (carte) carte.querySelector(".confST").checked = false;
+  if (t.dataset.bloc === "med") $("conf_med").checked = false;
+  if (t.dataset.bloc === "q") $("conf_q").checked = false;
+  if (t.dataset.bloc === "ass") $("conf_ass").checked = false;
+}, true);
+document.addEventListener("change", e => { const t = e.target; if (t.classList && (t.classList.contains("conf") || t.classList.contains("valBase"))) t.closest(".validation").classList.remove("invalide"); }, true);
 
 // pastilles
 NUANCIER.forEach(c => { const p = document.createElement("div"); p.className = "pastille"; p.style.background = c; p.title = c; p.onclick = () => { $("couleur").value = c; majCouleur(); }; $("pastilles").appendChild(p); });
@@ -312,7 +418,6 @@ $("visuFermer").onclick = () => { $("visu").hidden = true; };
 $("visu").onclick = e => { if (e.target.id === "visu" || e.target.id === "visuPages") $("visu").hidden = true; };
 document.addEventListener("keydown", e => { if (e.key === "Escape") $("visu").hidden = true; });
 $("cgvPartenaires").textContent = D.cgv.PARTENAIRES_RGE; $("cgvSousTraitants").textContent = D.cgv.CGV_SOUS_TRAITANTS; $("cgvMediateur").textContent = D.cgv.MEDIATEUR;
-$("valideCGV").onchange = () => $("validation").classList.remove("invalide");
 $("respCGV").onchange = () => $("validationResp").classList.remove("invalide");
 $("certif").onchange = () => $("validationCertif").classList.remove("invalide");
 function fichesChoisies() { const c = [...document.querySelectorAll("#fiches input:checked")].map(i => i.value); ordre = ordre.filter(f => c.includes(f)); c.forEach(f => { if (!ordre.includes(f)) ordre.push(f); }); return ordre.slice(); }
@@ -333,13 +438,27 @@ if (s0) {
   if (s0.quantites) document.querySelectorAll(".qte").forEach(i => { if (s0.quantites[i.dataset.doc]) i.value = s0.quantites[i.dataset.doc]; });
   if (s0.modeleBDC) { const m = document.querySelector("input[name=modeleBDC][value=" + s0.modeleBDC + "]"); if (m) m.checked = true; }
   if (s0.rge) { $("rgePac").checked = !!s0.rge.pac; $("rgePv").checked = !!s0.rge.pv; $("rgeQualibat").checked = !!s0.rge.qualibat; }
-  $("valideCGV").checked = !!s0.cgvValide; $("respCGV").checked = !!s0.respCGV;
+  $("respCGV").checked = !!s0.respCGV;
+  if (s0.commande) COMMANDE.forEach(k => { if (s0.commande[k] != null) $(k).value = s0.commande[k]; });
+  if (s0.livSiege === false) $("livSiege").checked = false;
   if (s0.modeLogo === "part") document.querySelector("input[name=modeLogo][value=part]").checked = true;
   if (s0.modeCouleur === "perso") document.querySelector("input[name=modeCouleur][value=perso]").checked = true;
 } else {
   document.querySelectorAll("#villes input").forEach(i => i.checked = D.defaut.includes(i.value));
 }
-function majPuces() { document.querySelectorAll("input[name=modeCGV]").forEach(i => i.closest(".puce").classList.toggle("on", i.checked)); document.querySelectorAll(".modele").forEach(l => l.classList.toggle("on", l.querySelector("input").checked)); document.querySelectorAll(".qte").forEach(i => { const c = document.querySelector("input[name=doc][value=" + i.dataset.doc + "]").checked; i.disabled = !c; }); document.querySelectorAll(".puce").forEach(l => l.classList.toggle("on", l.querySelector("input").checked)); $("depotPhoto").style.display = document.querySelector("input[name=photo]:checked").value === "perso" ? "" : "none"; $("depotLogo").style.display = modeLogo() === "ici" ? "" : "none"; $("logoPart").hidden = modeLogo() === "ici"; $("blocCouleur").style.display = document.querySelector("input[name=modeCouleur]:checked").value === "perso" ? "" : "none"; }
+(function () {
+  const c = s0 && s0.cgvD;
+  (c && c.st && c.st.length ? c.st : [{}]).forEach(ajouterST);
+  (c && c.q && c.q.length ? c.q : [{}]).forEach(ajouterQ);
+  if (c) {
+    $("aucunST").checked = !!c.aucunST;
+    ["nom", "adresse", "site", "email"].forEach(k => $("med_" + k).value = (c.med || {})[k] || "");
+    ["nom", "num"].forEach(k => $("ass_" + k).value = (c.ass || {})[k] || "");
+    $("conf_med").checked = !!c.confMed; $("conf_q").checked = !!c.confQ; $("conf_ass").checked = !!c.confAss;
+    document.querySelectorAll(".valBase").forEach(x => x.checked = !!(c.valBase || {})[x.dataset.k]);
+  }
+})();
+function majPuces() { document.querySelectorAll("input[name=modeCGV]").forEach(i => i.closest(".puce").classList.toggle("on", i.checked)); document.querySelectorAll(".modele").forEach(l => l.classList.toggle("on", l.querySelector("input").checked)); document.querySelectorAll(".qte").forEach(i => { const c = document.querySelector("input[name=doc][value=" + i.dataset.doc + "]").checked; i.disabled = !c; }); document.querySelectorAll(".puce").forEach(l => l.classList.toggle("on", l.querySelector("input").checked)); $("depotPhoto").style.display = document.querySelector("input[name=photo]:checked").value === "perso" ? "" : "none"; $("depotLogo").style.display = modeLogo() === "ici" ? "" : "none"; $("logoPart").hidden = modeLogo() === "ici"; $("blocLiv").hidden = $("livSiege").checked; $("blocCouleur").style.display = document.querySelector("input[name=modeCouleur]:checked").value === "perso" ? "" : "none"; }
 function alertePages() {
   let p = 10; fichesChoisies().forEach(f => p += FICHE[f].pages);
   const m = p % 4 ? 4 - p % 4 : 0;
@@ -468,13 +587,39 @@ function verifier() {
   if (!docsChoisis().length) err.push("documents");
   if (!$("respCGV").checked) { $("validationResp").classList.add("invalide"); err.push("responsabilité CGV"); }
   if (!$("certif").checked) { $("validationCertif").classList.add("invalide"); err.push("certification"); }
-  if (modeCGV() === "base" && !$("valideCGV").checked) { $("validation").classList.add("invalide"); err.push("validation des CGV"); }
+  // livraison et contact
+  ["CMD_CONTACT", "CMD_TEL"].concat($("livSiege").checked ? [] : ["LIV_ADRESSE", "LIV_CP", "LIV_VILLE"]).forEach(k => { if (!$(k).value.trim()) { $(k).classList.add("invalide"); err.push(k); } });
+  // CGV : chaque bloc rempli et confirmé
+  const c = lireCGV(), rouge = el => { el.classList.add("invalide"); err.push("CGV"); };
+  const vide = (sel, racine) => [...(racine || document).querySelectorAll(sel)].filter(i => !i.value.trim());
+  if (modeCGV() === "base") document.querySelectorAll(".valBase").forEach(x => { if (!x.checked) rouge(x.closest(".validation")); });
+  else {
+    if (!c.aucunST) {
+      if (!document.querySelector(".carteST")) ajouterST();
+      document.querySelectorAll(".carteST").forEach(carte => {
+        ["denom", "siret", "adresse", "travaux"].forEach(k => { const i = carte.querySelector(`input[data-k=${k}]`); if (!i.value.trim()) rouge(i); });
+        if (!carte.querySelector(".confST").checked) rouge(carte.querySelector(".confST").closest(".validation"));
+      });
+    }
+    vide("#med_nom, #med_adresse").forEach(rouge);
+    if (!$("conf_med").checked) rouge($("conf_med").closest(".validation"));
+  }
+  if (!document.querySelector(".ligneQ")) ajouterQ();
+  document.querySelectorAll(".ligneQ").forEach(l => vide("input[data-k=nom], input[data-k=num]", l).forEach(rouge));
+  if (!$("conf_q").checked) rouge($("conf_q").closest(".validation"));
+  vide("#ass_nom, #ass_num").forEach(rouge);
+  if (!$("conf_ass").checked) rouge($("conf_ass").closest(".validation"));
   document.querySelectorAll(".qte").forEach(i => { if (!i.disabled && !i.value.replace(/\D/g, "")) { i.classList.add("invalide"); err.push("quantité"); } });
   return err;
 }
 $("telecharger").onclick = () => {
   const err = verifier();
-  if (err.length) { message("À compléter : " + err.length + " point(s) en rouge" + (err.includes("logo") ? " (dont le logo)" : "") + ".", "err"); const p = document.querySelector(".invalide"); if (p) p.scrollIntoView({behavior: "smooth", block: "center"}); return; }
+  if (err.length) {
+    const parties = [...new Set([...document.querySelectorAll(".invalide")].map(e => { const t = e.closest("section"); return t ? t.querySelector("h2").textContent.replace(/^\d+/, "").trim() : ""; }).filter(Boolean))];
+    message("Il manque des informations (en rouge) dans : " + parties.join(", ") + ".", "err");
+    const p = document.querySelector(".invalide"); if (p) p.scrollIntoView({behavior: "smooth", block: "center"}); return;
+  }
+  message("Les champs * sont obligatoires. Votre saisie est gardée sur cet appareil.");
   const ap = alertePages();
   if (docsChoisis().includes("brochure") && ap.manque && !confirm("Votre brochure fait " + ap.pages + " pages, ce n’est pas un multiple de 4.\n\n" + ap.manque + " page(s) de notes seront ajoutées pour arriver à " + (ap.pages + ap.manque) + " pages.\n\nOK : continuer. Annuler : revoir les fiches.")) { $("nbPages").scrollIntoView({behavior: "smooth", block: "center"}); return; }
   const dec = [...document.querySelectorAll("#ordre li.decale")].length;
@@ -482,11 +627,18 @@ $("telecharger").onclick = () => {
   ouvrirRecap();
 };
 function construireDossier() {
+  composerCGV();
   const societe = {}; CHAMPS.forEach(k => societe[k] = $(k).value.trim());
+  const cmd = {}; COMMANDE.forEach(k => cmd[k] = $(k).value.trim()); cmd.livSiege = $("livSiege").checked;
+  if (cmd.livSiege) { cmd.LIV_ADRESSE = societe.ADRESSE; cmd.LIV_CP = societe.CP; cmd.LIV_VILLE = societe.VILLE; }
+  const c = lireCGV(), confirmations = [];
+  if (modeCGV() === "base") document.querySelectorAll(".valBase").forEach(x => { if (x.checked) confirmations.push(x.closest(".validation").textContent.trim()); });
+  else { c.st.forEach((x, i) => { if (!c.aucunST && x.ok) confirmations.push("Je confirme les informations du sous-traitant " + (i + 1) + " (" + x.denom + ")"); }); if (c.aucunST) confirmations.push("Je n’ai aucun sous-traitant"); if (c.confMed) confirmations.push("Je confirme les informations du médiateur"); }
+  if (c.confQ) confirmations.push("Je confirme mes qualifications RGE"); if (c.confAss) confirmations.push("Je confirme mon assurance décennale");
   const hex = $("couleur").value, rvb = [1, 3, 5].map(i => parseInt(hex.substr(i, 2), 16));
   return {type: "kit-renovation-brief", version: 2, cgv: modeCGV(), date: new Date().toISOString().slice(0, 10), horodatage: new Date().toISOString(), societe, logo: modeLogo() === "ici" ? logo : null, logoAPart: modeLogo() === "part",
     photo: document.querySelector("input[name=photo]:checked").value === "perso" ? photo : null,
-    couleurRVB: document.querySelector("input[name=modeCouleur]:checked").value === "perso" ? rvb : null, villes: villesChoisies(), fiches: fichesChoisies(), documents: docsChoisis(), quantites: quantites(), rge: {pac: $("rgePac").checked, pv: $("rgePv").checked, qualibat: $("rgeQualibat").checked}, cgvValide: modeCGV() === "base" && $("valideCGV").checked,
+    couleurRVB: document.querySelector("input[name=modeCouleur]:checked").value === "perso" ? rvb : null, villes: villesChoisies(), fiches: fichesChoisies(), documents: docsChoisis(), quantites: quantites(), rge: {pac: $("rgePac").checked, pv: $("rgePv").checked, qualibat: $("rgeQualibat").checked}, cgvValide: modeCGV() === "base" && [...document.querySelectorAll(".valBase")].every(x => x.checked), cgvDetail: c, cgvConfirmations: confirmations, commande: cmd,
     modeleBDC: document.querySelector("input[name=modeleBDC]:checked").value, certifie: $("certif").checked, responsabiliteCGV: $("respCGV").checked};
 }
 const LIBELLES = {NOM: "Nom commercial", FORME: "Forme juridique", CAPITAL: "Capital social", ADRESSE: "Adresse du siège", CP: "Code postal", VILLE: "Ville", TEL: "Téléphone", EMAIL: "E-mail", SIREN: "SIREN", SIRET: "SIRET", RCS: "Ville du RCS", TVA: "N° de TVA", QUALITE: "Représentant (qualité)", REPRESENTANT: "Représentant (nom)", PARTENAIRES_RGE: "Partenaires installateurs RGE", CGV_SOUS_TRAITANTS: "Sous-traitants", MEDIATEUR: "Médiateur", RGE_SOCIETE: "Vos qualifications RGE", ASSURANCE: "Assurance décennale"};
@@ -501,14 +653,18 @@ function ouvrirRecap() {
   t.push("</table><h3>Visuels</h3><table>");
   ligne("Logo", b.logo ? b.logo.nom : "envoyé à part par le client"); ligne("Couleur", b.couleurRVB ? $("couleur").value.toUpperCase() : "choisie par le studio"); ligne("Photo de couverture", b.photo ? b.photo.nom : "choisie par le studio");
   ligne("Villes de la carte", b.villes.join(", "));
+  t.push("</table><h3>Livraison et contact</h3><table>");
+  ligne("Contact", b.commande.CMD_CONTACT); ligne("Téléphone", b.commande.CMD_TEL); ligne("E-mail", b.commande.CMD_EMAIL);
+  ligne("Adresse de livraison", [b.commande.LIV_ADRESSE, (b.commande.LIV_CP + " " + b.commande.LIV_VILLE).trim()].filter(Boolean).join(", ")); ligne("Précisions", b.commande.LIV_INFOS);
   t.push("</table><h3>Documents</h3><table>");
   b.documents.forEach(d => ligne(DOCS[d], (b.quantites[d] || "") + " ex."));
   if (b.documents.includes("bdc")) ligne("Modèle de bon de commande", b.modeleBDC === "solea" ? "Modèle B" : "Modèle A");
   if (b.documents.includes("brochure")) { const ch = chemin(); ligne("Brochure", ch.pages.length + " pages"); ch.debuts.forEach(d => ligne("Fiche p. " + d.page + (d.f.pages > 1 ? "-" + (d.page + d.f.pages - 1) : ""), d.f.titre)); }
   t.push("</table><h3>Conditions générales de vente</h3><table>");
-  if (b.cgv === "base") { ligne("Informations pré-remplies", "validées"); ligne(LIBELLES.PARTENAIRES_RGE, D.cgv.PARTENAIRES_RGE); ligne(LIBELLES.CGV_SOUS_TRAITANTS, D.cgv.CGV_SOUS_TRAITANTS); ligne(LIBELLES.MEDIATEUR, D.cgv.MEDIATEUR); }
+  if (b.cgv === "base") { ligne("Informations pré-remplies", "validées bloc par bloc"); ligne(LIBELLES.PARTENAIRES_RGE, D.cgv.PARTENAIRES_RGE); ligne(LIBELLES.CGV_SOUS_TRAITANTS, D.cgv.CGV_SOUS_TRAITANTS); ligne(LIBELLES.MEDIATEUR, D.cgv.MEDIATEUR); }
   else ["PARTENAIRES_RGE", "CGV_SOUS_TRAITANTS", "MEDIATEUR"].forEach(k => ligne(LIBELLES[k], b.societe[k]));
   ["RGE_SOCIETE", "ASSURANCE"].forEach(k => ligne(LIBELLES[k], b.societe[k]));
+  ligne("Validations", b.cgvConfirmations.map(x => "✓ " + x).join("\n"));
   ligne("Responsabilité", "Le client reconnaît que les CGV et mentions légales relèvent de sa seule responsabilité ; Imprigraphic les reproduit sans en vérifier l’exactitude ni la conformité juridique.");
   ligne("Logos de qualification", [b.rge.pac && "Quali’PAC", b.rge.pv && "Quali’PV", b.rge.qualibat && "Qualibat"].filter(Boolean).join(", "));
   t.push("</table><p class='aide' style='margin-top:14px'>Informations certifiées exactes par le client le " + new Date(b.horodatage).toLocaleString("fr-FR") + ".</p>");
