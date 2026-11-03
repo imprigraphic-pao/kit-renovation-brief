@@ -106,17 +106,6 @@
   .pg + .pg { border-left: 1px solid #c9ced3; }
   .pg.alerte { outline: 2px solid #e6a23c; outline-offset: -2px; }
   .planche small { font-size: 10px; color: var(--doux); }
-  #recap { position: fixed; inset: 0; z-index: 20; background: rgba(20,24,28,.6); overflow: auto; padding: 24px 12px; }
-  #recap[hidden] { display: none; }
-  .recapBoite { background: #fff; max-width: 760px; margin: 0 auto; border-radius: 10px; padding: 22px; }
-  #recapContenu table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  #recapContenu th { text-align: left; font-weight: 600; width: 34%; padding: 5px 8px 5px 0; vertical-align: top; color: var(--doux); }
-  #recapContenu td { padding: 5px 0; white-space: pre-wrap; border-bottom: 1px solid var(--ligne); }
-  #recapContenu h3 { font-size: 14px; margin: 16px 0 4px; }
-  #recapCode { background: #eaf5ee; color: var(--ok); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; font-size: 14px; }
-  #recapCode b { font-family: ui-monospace, Menlo, monospace; font-size: 16px; letter-spacing: .05em; }
-  .recapBoutons { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-top: 18px; }
-  @media print { body > *:not(#recap) { display: none !important; } #recap { position: static; background: none; padding: 0; } .recapBoutons { display: none; } .recapBoite { padding: 0; } }
   @media (max-width: 560px) { h1 { font-size: 22px; } section { padding: 16px; } }
 </style>
 </head>
@@ -285,14 +274,6 @@
     <label class="validation" id="validationCertif" style="border:0;margin:0;padding:0"><input type="checkbox" id="certif"> Je certifie l’exactitude des informations saisies dans ce formulaire. Elles seront reproduites telles quelles sur les documents imprimés.</label>
   </section>
 </main>
-
-<div id="recap" hidden><div class="recapBoite">
-  <div id="recapCode" hidden></div>
-  <h2 style="display:block">Récapitulatif de votre dossier</h2>
-  <p class="aide">Relisez attentivement : ces informations seront imprimées telles quelles.</p>
-  <div id="recapContenu"></div>
-  <div class="recapBoutons"><button class="second" id="recapRetour" type="button">Modifier</button><button id="recapValider" type="button">Valider et télécharger mon dossier</button></div>
-</div></div>
 
 <div id="visu" hidden><div id="visuTete"><b id="visuTitre"></b><button class="second" id="visuFermer" type="button">Fermer</button></div><div id="visuPages"></div></div>
 
@@ -627,7 +608,7 @@ $("telecharger").onclick = () => {
   if (docsChoisis().includes("brochure") && ap.manque && !confirm("Votre brochure fait " + ap.pages + " pages, ce n’est pas un multiple de 4.\n\n" + ap.manque + " page(s) de notes seront ajoutées pour arriver à " + (ap.pages + ap.manque) + " pages.\n\nOK : continuer. Annuler : revoir les fiches.")) { $("nbPages").scrollIntoView({behavior: "smooth", block: "center"}); return; }
   const dec = [...document.querySelectorAll("#ordre li.decale")].length;
   if (docsChoisis().includes("brochure") && dec && !confirm(dec + " fiche(s) commencent sur une page de droite : leurs pages ne se feront pas face.\n\nOK : continuer quand même. Annuler : revoir l’ordre des fiches.")) { $("blocOrdre").scrollIntoView({behavior: "smooth", block: "center"}); return; }
-  ouvrirRecap();
+  telechargerDossier();
 };
 function construireDossier() {
   composerCGV();
@@ -644,38 +625,6 @@ function construireDossier() {
     couleurRVB: document.querySelector("input[name=modeCouleur]:checked").value === "perso" ? rvb : null, villes: villesChoisies(), fiches: fichesChoisies(), documents: docsChoisis(), quantites: quantites(), rge: {pac: $("rgePac").checked, pv: $("rgePv").checked, qualibat: $("rgeQualibat").checked}, cgvValide: modeCGV() === "base" && [...document.querySelectorAll(".valBase")].every(x => x.checked), cgvDetail: c, cgvConfirmations: confirmations, commande: cmd,
     modeleBDC: document.querySelector("input[name=modeleBDC]:checked").value, certifie: $("certif").checked, responsabiliteCGV: $("respCGV").checked};
 }
-const LIBELLES = {NOM: "Nom commercial", FORME: "Forme juridique", CAPITAL: "Capital social", ADRESSE: "Adresse du siège", CP: "Code postal", VILLE: "Ville", TEL: "Téléphone", EMAIL: "E-mail", SIREN: "SIREN", SIRET: "SIRET", RCS: "Ville du RCS", TVA: "N° de TVA", QUALITE: "Représentant (qualité)", REPRESENTANT: "Représentant (nom)", PARTENAIRES_RGE: "Partenaires installateurs RGE", CGV_SOUS_TRAITANTS: "Sous-traitants", MEDIATEUR: "Médiateur", RGE_SOCIETE: "Vos qualifications RGE", ASSURANCE: "Assurance décennale"};
-const DOCS = {brochure: "Brochure A4", bdc: "Bon de commande A4", pochette: "Enveloppe 229 x 324"};
-let dossier = null;
-function ouvrirRecap() {
-  dossier = construireDossier();
-  const b = dossier, t = [], esc = x => String(x == null ? "" : x).replace(/[&<>]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;"})[c]);
-  const ligne = (k, v) => t.push("<tr><th>" + esc(k) + "</th><td>" + esc(v || "—") + "</td></tr>");
-  t.push("<h3>Société</h3><table>");
-  ["NOM", "FORME", "CAPITAL", "ADRESSE", "CP", "VILLE", "TEL", "EMAIL", "SIREN", "SIRET", "RCS", "TVA", "QUALITE", "REPRESENTANT"].forEach(k => ligne(LIBELLES[k], b.societe[k]));
-  t.push("</table><h3>Visuels</h3><table>");
-  ligne("Logo", b.logo ? b.logo.nom : "envoyé à part par le client"); ligne("Couleur", b.couleurRVB ? $("couleur").value.toUpperCase() : "choisie par le studio"); ligne("Photo de couverture", b.photo ? b.photo.nom : "choisie par le studio");
-  ligne("Villes de la carte", b.villes.join(", "));
-  t.push("</table><h3>Livraison et contact</h3><table>");
-  ligne("Contact", b.commande.CMD_CONTACT); ligne("Téléphone", b.commande.CMD_TEL); ligne("E-mail", b.commande.CMD_EMAIL);
-  ligne("Adresse de livraison", [b.commande.LIV_ADRESSE, (b.commande.LIV_CP + " " + b.commande.LIV_VILLE).trim()].filter(Boolean).join(", ")); ligne("Précisions", b.commande.LIV_INFOS);
-  t.push("</table><h3>Documents</h3><table>");
-  b.documents.forEach(d => ligne(DOCS[d], (b.quantites[d] || "") + " ex."));
-  if (b.documents.includes("bdc")) ligne("Modèle de bon de commande", b.modeleBDC === "solea" ? "Modèle B" : "Modèle A");
-  if (b.documents.includes("brochure")) { const ch = chemin(); ligne("Brochure", ch.pages.length + " pages"); ch.debuts.forEach(d => ligne("Fiche p. " + d.page + (d.f.pages > 1 ? "-" + (d.page + d.f.pages - 1) : ""), d.f.titre)); }
-  t.push("</table><h3>Conditions générales de vente</h3><table>");
-  if (b.cgv === "base") { ligne("Informations pré-remplies", "validées bloc par bloc"); ligne(LIBELLES.PARTENAIRES_RGE, D.cgv.PARTENAIRES_RGE); ligne(LIBELLES.CGV_SOUS_TRAITANTS, D.cgv.CGV_SOUS_TRAITANTS); ligne(LIBELLES.MEDIATEUR, D.cgv.MEDIATEUR); }
-  else ["PARTENAIRES_RGE", "CGV_SOUS_TRAITANTS", "MEDIATEUR"].forEach(k => ligne(LIBELLES[k], b.societe[k]));
-  ["RGE_SOCIETE", "ASSURANCE"].forEach(k => ligne(LIBELLES[k], b.societe[k]));
-  ligne("Validations", b.cgvConfirmations.map(x => "✓ " + x).join("\n"));
-  ligne("Responsabilité", "Le client reconnaît que les CGV et mentions légales relèvent de sa seule responsabilité ; Imprigraphic les reproduit sans en vérifier l’exactitude ni la conformité juridique.");
-  ligne("Logos de qualification", [b.rge.pac && "Quali’PAC", b.rge.pv && "Quali’PV", b.rge.qualibat && "Qualibat"].filter(Boolean).join(", "));
-  t.push("</table><p class='aide' style='margin-top:14px'>Informations certifiées exactes par le client le " + new Date(b.horodatage).toLocaleString("fr-FR") + ".</p>");
-  $("recapContenu").innerHTML = t.join("");
-  $("recapCode").hidden = true; $("recapValider").hidden = false; $("recapRetour").textContent = "Modifier";
-  $("recap").hidden = false; $("recap").scrollTop = 0;
-}
-$("recapRetour").onclick = () => { $("recap").hidden = true; };
 // dossier : texte encodé (pas lisible d'un coup d'œil), avec l'empreinte du contenu pour détecter un fichier abîmé
 async function encoder(texte) {
   const c = crypto.subtle, hex = u => [...u].map(x => x.toString(16).padStart(2, "0")).join("");
@@ -760,9 +709,12 @@ function zip(fichiers) {
   [[0, 0x06054b50, 4], [4, 0, 2], [6, 0, 2], [8, fichiers.length, 2], [10, fichiers.length, 2], [12, tailleC, 4], [16, pos, 4], [20, 0, 2]].forEach(([o, v, n]) => n === 4 ? fin.setUint32(o, v, true) : fin.setUint16(o, v, true));
   return new Blob(parts.concat(centre, [new Uint8Array(fin.buffer)]), {type: "application/zip"});
 }
-$("recapValider").onclick = async () => {
-  $("recapValider").disabled = true;
+// téléchargement direct : un seul fichier .zip (fiche commande PDF + dossier)
+let dossier = null;
+async function telechargerDossier() {
+  $("telecharger").disabled = true;
   try {
+    dossier = construireDossier();
     const r = await encoder(JSON.stringify(dossier));
     const nom = dossier.societe.NOM.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Z0-9]+/g, "_").replace(/^_|_$/g, "");
     const base = "IMPRIGRAPHIC_" + nom + "_" + dossier.date, fn = base + ".zip";
@@ -772,14 +724,10 @@ $("recapValider").onclick = async () => {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(archive);
     a.download = fn; document.body.appendChild(a); a.click(); a.remove();
-    $("recapCode").innerHTML = "✓ Dossier téléchargé : <b></b><br>Envoyez ce seul fichier à Imprigraphic par WhatsApp ou par e-mail, sans l’ouvrir ni le modifier.<br>Code de contrôle du dossier : <b></b>";
-    $("recapCode").querySelectorAll("b")[0].textContent = fn; $("recapCode").querySelectorAll("b")[1].textContent = code;
-    $("recapCode").hidden = false; $("recapValider").hidden = true; $("recapRetour").textContent = "Fermer";
-    $("recap").scrollTop = 0;
-    message("Dossier téléchargé : envoyez " + fn + " à Imprigraphic.", "ok");
+    message("✓ Dossier téléchargé : " + fn + ". Envoyez ce seul fichier à Imprigraphic par WhatsApp ou par e-mail. Code de contrôle : " + code, "ok");
   } catch (x) { alert("Le dossier n’a pas pu être préparé sur cet appareil (" + x.message + "). Essayez avec un autre navigateur."); }
-  finally { $("recapValider").disabled = false; }
-};
+  finally { $("telecharger").disabled = false; }
+}
 $("effacerHaut").onclick = () => $("effacer").onclick();
 $("effacer").onclick = () => { if (confirm("Vider tous les champs ?\n\nToute votre saisie sera effacée sur cet appareil.")) { try { localStorage.removeItem("briefKit"); } catch (e) {} location.reload(); } };
 majCGV(); majPuces();
