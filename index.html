@@ -67,6 +67,7 @@
   .validation input { flex: none; margin-top: 3px; width: 20px; height: 20px; }
   .validation { display: flex; gap: 8px; align-items: flex-start; font-weight: 600; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--ligne); cursor: pointer; }
   .validation.invalide { color: var(--err); }
+  .horsDocs { display: none !important; }
   .qte { width: 90px !important; padding: 6px 8px !important; text-align: right; }
   .modeles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 440px)); gap: 12px; }
   .modele { border: 2px solid var(--ligne); border-radius: 10px; padding: 10px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
@@ -118,29 +119,45 @@
 </header>
 <main>
   <section>
-    <h2><span>1</span>Votre société</h2>
+    <h2><span>1</span>Vos documents</h2>
+    <p class="aide">Cochez les documents voulus et indiquez le nombre d'exemplaires. Le formulaire ne vous demande ensuite que les informations utiles à ces documents.</p>
+    <div id="docs">
+      <div class="ligne-choix"><label class="puce on"><input type="checkbox" name="doc" value="brochure" checked> Brochure A4</label><small><input type="text" class="qte" data-doc="brochure" inputmode="numeric" placeholder="ex. 2000"> ex.</small></div>
+      <div class="ligne-choix"><label class="puce on"><input type="checkbox" name="doc" value="bdc" checked> Bon de commande A4</label><small><input type="text" class="qte" data-doc="bdc" inputmode="numeric" placeholder="ex. 2000"> ex.</small></div>
+      <div class="ligne-choix"><label class="puce on"><input type="checkbox" name="doc" value="pochette" checked> Enveloppe 229 x 324</label><small><input type="text" class="qte" data-doc="pochette" inputmode="numeric" placeholder="ex. 2000"> ex.</small></div>
+    </div>
+    <div data-pour="bdc">
+    <p class="aide" style="margin:16px 0 8px">Modèle de bon de commande :</p>
+    <div class="modeles" id="modeles">
+      <label class="modele on"><input type="radio" name="modeleBDC" value="liasse" checked><img src="apercus/bdc-liasse-2.jpg" alt="Formulaire du modèle A"><b>Modèle A — formulaire aéré</b><small>10 pages A4. Le formulaire de commande s’étale sur 4 pages : une rubrique par produit, avec de la place pour écrire. Conditions générales sur 4 pages.</small><button type="button" class="second voirModele" data-m="liasse">Voir le modèle</button></label>
+      <label class="modele"><input type="radio" name="modeleBDC" value="solea"><img src="apercus/bdc-solea-2.jpg" alt="Formulaire du modèle B"><b>Modèle B — formulaire compact</b><small>6 pages A4. Tout le formulaire tient sur 2 pages en vis-à-vis, avec les marques à cocher (Thomson, Atlantic, LG…). Conditions générales sur 2 pages.</small><button type="button" class="second voirModele" data-m="solea">Voir le modèle</button></label>
+    </div>
+    </div>
+  </section>
+  <section>
+    <h2><span>2</span>Votre société</h2>
     <p class="aide">Les informations sont reproduites telles que vous les saisissez. Le nom s'imprimera en capitales.</p>
-    <div class="siren"><label class="champ">SIREN *<small>9 chiffres</small><input type="text" id="SIREN" inputmode="numeric" required></label><button type="button" class="second" id="chercherSiren">Remplir depuis l’annuaire des entreprises</button></div>
-    <p class="aide" id="sirenEtat" hidden></p>
+    <div class="siren" data-pour="brochure bdc"><label class="champ">SIREN *<small>9 chiffres</small><input type="text" id="SIREN" inputmode="numeric" required></label><button type="button" class="second" id="chercherSiren">Remplir depuis l’annuaire des entreprises</button></div>
+    <p class="aide" id="sirenEtat" data-pour="brochure bdc" hidden></p>
     <div class="grille">
       <label class="champ">Nom commercial *<input type="text" id="NOM" autocomplete="organization" required></label>
-      <label class="champ">Forme juridique *<select id="FORME"><option>SAS</option><option>SASU</option><option>SARL</option><option>EURL</option><option>SA</option><option>SNC</option><option>EI</option></select></label>
-      <label class="champ">Capital social *<input type="text" id="CAPITAL" placeholder="ex. 10 000 €" required></label>
-      <label class="champ large">Adresse du siège *<input type="text" id="ADRESSE" placeholder="n° et rue" autocomplete="street-address" required></label>
-      <label class="champ">Code postal *<input type="text" id="CP" inputmode="numeric" maxlength="5" autocomplete="postal-code" required></label>
-      <label class="champ">Ville *<input type="text" id="VILLE" autocomplete="address-level2" required></label>
-      <label class="champ">Téléphone *<input type="tel" id="TEL" autocomplete="tel" required></label>
-      <label class="champ">E-mail *<input type="email" id="EMAIL" autocomplete="email" required></label>
-      <label class="champ">SIRET<small>facultatif — affiché à la place du SIREN</small><input type="text" id="SIRET" inputmode="numeric"></label>
-      <label class="champ">Ville du RCS *<small>« RCS de … »</small><input type="text" id="RCS" required></label>
-      <label class="champ">N° de TVA intracommunautaire<small>calculé depuis le SIREN si vide</small><input type="text" id="TVA"></label>
-      <label class="champ">Représentant (qualité) *<select id="QUALITE"><option>Président</option><option>Présidente</option><option>Gérant</option><option>Gérante</option><option>Directeur général</option></select></label>
-      <label class="champ">Représentant (nom) *<input type="text" id="REPRESENTANT" placeholder="Monsieur Prénom Nom" required></label>
+      <label class="champ" data-pour="bdc">Forme juridique *<select id="FORME"><option>SAS</option><option>SASU</option><option>SARL</option><option>EURL</option><option>SA</option><option>SNC</option><option>EI</option></select></label>
+      <label class="champ" data-pour="bdc">Capital social *<input type="text" id="CAPITAL" placeholder="ex. 10 000 €" required></label>
+      <label class="champ large" data-pour="brochure bdc">Adresse du siège *<input type="text" id="ADRESSE" placeholder="n° et rue" autocomplete="street-address" required></label>
+      <label class="champ" data-pour="brochure bdc">Code postal *<input type="text" id="CP" inputmode="numeric" maxlength="5" autocomplete="postal-code" required></label>
+      <label class="champ" data-pour="brochure bdc">Ville *<input type="text" id="VILLE" autocomplete="address-level2" required></label>
+      <label class="champ" data-pour="brochure bdc">Téléphone *<input type="tel" id="TEL" autocomplete="tel" required></label>
+      <label class="champ" data-pour="brochure bdc">E-mail *<input type="email" id="EMAIL" autocomplete="email" required></label>
+      <label class="champ" data-pour="brochure bdc">SIRET<small>facultatif — affiché à la place du SIREN</small><input type="text" id="SIRET" inputmode="numeric"></label>
+      <label class="champ" data-pour="bdc">Ville du RCS *<small>« RCS de … »</small><input type="text" id="RCS" required></label>
+      <label class="champ" data-pour="bdc">N° de TVA intracommunautaire<small>calculé depuis le SIREN si vide</small><input type="text" id="TVA"></label>
+      <label class="champ" data-pour="bdc">Représentant (qualité) *<select id="QUALITE"><option>Président</option><option>Présidente</option><option>Gérant</option><option>Gérante</option><option>Directeur général</option></select></label>
+      <label class="champ" data-pour="bdc">Représentant (nom) *<input type="text" id="REPRESENTANT" placeholder="Monsieur Prénom Nom" required></label>
     </div>
   </section>
 
   <section>
-    <h2><span>2</span>Logo et couleur</h2>
+    <h2><span>3</span>Logo et couleur</h2>
     <p class="aide">Logo en PDF, AI ou PNG haute définition de préférence (un JPG à fond blanc laisse un cadre).</p>
     <div class="choix" style="margin-bottom:12px">
       <label class="puce on"><input type="radio" name="modeLogo" value="ici" checked> Ajouter mon logo ici (recommandé)</label>
@@ -160,7 +177,7 @@
   </section>
 
   <section>
-    <h2><span>3</span>Photo de couverture</h2>
+    <h2><span>4</span>Photo de couverture</h2>
     <div class="choix">
       <label class="puce on"><input type="radio" name="photo" value="studio" checked> Laisser le studio choisir</label>
       <label class="puce"><input type="radio" name="photo" value="perso"> Envoyer ma photo</label>
@@ -168,16 +185,16 @@
     <div class="depot" id="depotPhoto" style="margin-top:12px; display:none"><div id="photoVue"><b>Touchez ici pour choisir votre photo</b><br><small>haute définition, depuis vos Photos ou vos Fichiers</small></div><input type="file" id="photoFichier" accept="image/*,.tif,.tiff,.psd" hidden></div>
   </section>
 
-  <section>
-    <h2><span>4</span>Carte « Nos équipes partout en France »</h2>
+  <section data-pour="brochure bdc">
+    <h2><span>5</span>Carte « Nos équipes partout en France »</h2>
     <p class="aide">Cochez les villes où vous intervenez (au dos de la brochure et du bon de commande).</p>
     <input type="text" id="filtreVilles" placeholder="Rechercher une ville…" style="margin-bottom:12px">
     <div class="choix" id="villes"></div>
     <div class="compteur" id="nbVilles"></div>
   </section>
 
-  <section>
-    <h2><span>5</span>Vos produits</h2>
+  <section data-pour="brochure">
+    <h2><span>6</span>Vos produits</h2>
     <p class="aide">Les fiches produits insérées dans la brochure. Cliquez sur « Voir » pour les consulter.</p>
     <div id="fiches"></div>
     <div class="compteur" id="nbPages"></div>
@@ -192,20 +209,6 @@
     </div>
   </section>
 
-  <section>
-    <h2><span>6</span>Documents et quantités</h2>
-    <p class="aide">Cochez les documents voulus et indiquez le nombre d'exemplaires.</p>
-    <div id="docs">
-      <div class="ligne-choix"><label class="puce on"><input type="checkbox" name="doc" value="brochure" checked> Brochure A4</label><small><input type="text" class="qte" data-doc="brochure" inputmode="numeric" placeholder="ex. 2000"> ex.</small></div>
-      <div class="ligne-choix"><label class="puce on"><input type="checkbox" name="doc" value="bdc" checked> Bon de commande A4</label><small><input type="text" class="qte" data-doc="bdc" inputmode="numeric" placeholder="ex. 2000"> ex.</small></div>
-      <div class="ligne-choix"><label class="puce on"><input type="checkbox" name="doc" value="pochette" checked> Enveloppe 229 x 324</label><small><input type="text" class="qte" data-doc="pochette" inputmode="numeric" placeholder="ex. 2000"> ex.</small></div>
-    </div>
-    <p class="aide" style="margin:16px 0 8px">Modèle de bon de commande :</p>
-    <div class="modeles" id="modeles">
-      <label class="modele on"><input type="radio" name="modeleBDC" value="liasse" checked><img src="apercus/bdc-liasse-2.jpg" alt="Formulaire du modèle A"><b>Modèle A — formulaire aéré</b><small>10 pages A4. Le formulaire de commande s’étale sur 4 pages : une rubrique par produit, avec de la place pour écrire. Conditions générales sur 4 pages.</small><button type="button" class="second voirModele" data-m="liasse">Voir le modèle</button></label>
-      <label class="modele"><input type="radio" name="modeleBDC" value="solea"><img src="apercus/bdc-solea-2.jpg" alt="Formulaire du modèle B"><b>Modèle B — formulaire compact</b><small>6 pages A4. Tout le formulaire tient sur 2 pages en vis-à-vis, avec les marques à cocher (Thomson, Atlantic, LG…). Conditions générales sur 2 pages.</small><button type="button" class="second voirModele" data-m="solea">Voir le modèle</button></label>
-    </div>
-  </section>
 
   <section>
     <h2><span>7</span>Livraison et contact</h2>
@@ -215,7 +218,7 @@
       <label class="champ">Téléphone du contact *<input type="tel" id="CMD_TEL" autocomplete="tel"></label>
       <label class="champ">E-mail du contact<input type="email" id="CMD_EMAIL" autocomplete="email"></label>
     </div>
-    <label class="validation"><input type="checkbox" id="livSiege" checked> Livraison à l’adresse du siège</label>
+    <label class="validation" id="livSiegeLigne"><input type="checkbox" id="livSiege" checked> Livraison à l’adresse du siège</label>
     <div class="grille" id="blocLiv" hidden style="margin-top:12px">
       <label class="champ large">Adresse de livraison *<input type="text" id="LIV_ADRESSE"></label>
       <label class="champ">Code postal *<input type="text" id="LIV_CP" inputmode="numeric" maxlength="5"></label>
@@ -224,9 +227,9 @@
     <label class="champ" style="margin-top:12px">Précisions pour la livraison<small>horaires, accès, personne sur place…</small><textarea id="LIV_INFOS"></textarea></label>
   </section>
 
-  <section>
+  <section id="secCGV" data-pour="bdc pochette">
     <h2><span>8</span>Conditions générales de vente</h2>
-    <p class="aide">Ces informations sont imprimées dans les conditions générales de votre bon de commande. Chaque bloc doit être validé.</p>
+    <p class="aide" id="aideCGV">Ces informations sont imprimées dans les conditions générales de votre bon de commande. Chaque bloc doit être validé.</p>
     <div class="choix" style="margin-bottom:12px">
       <label class="puce on"><input type="radio" name="modeCGV" value="base" checked> Valider les informations pré-remplies</label>
       <label class="puce"><input type="radio" name="modeCGV" value="manuel"> Rentrer mes informations</label>
@@ -234,16 +237,19 @@
     <div class="prerempli" id="aideCGVbase">
       <h3>Partenaires installateurs certifiés RGE</h3><p id="cgvPartenaires"></p>
       <label class="validation"><input type="checkbox" class="valBase" data-k="PARTENAIRES_RGE"> Je valide ces partenaires pour ma société</label>
+      <div data-pour="bdc">
       <h3 style="margin-top:16px">Sous-traitants et qualifications</h3><p id="cgvSousTraitants"></p>
       <label class="validation"><input type="checkbox" class="valBase" data-k="CGV_SOUS_TRAITANTS"> Je valide ces sous-traitants pour ma société</label>
       <h3 style="margin-top:16px">Médiateur de la consommation</h3><p id="cgvMediateur"></p>
       <label class="validation"><input type="checkbox" class="valBase" data-k="MEDIATEUR"> Je valide ce médiateur pour ma société</label>
+      </div>
     </div>
     <div id="blocCGVmanuel" hidden>
       <h3 class="sous">Vos sous-traitants</h3>
       <label class="validation" style="border:0;margin:0 0 8px;padding:0"><input type="checkbox" id="aucunST"> Je n’ai aucun sous-traitant</label>
       <div id="listeST"></div>
       <button type="button" class="second" id="ajoutST">+ Ajouter un sous-traitant</button>
+      <div data-pour="bdc">
       <h3 class="sous">Médiateur de la consommation</h3>
       <div class="grille">
         <label class="champ">Nom du médiateur *<input type="text" class="cgvc" data-bloc="med" id="med_nom"></label>
@@ -252,7 +258,9 @@
         <label class="champ">E-mail<input type="text" class="cgvc" data-bloc="med" id="med_email"></label>
       </div>
       <label class="validation"><input type="checkbox" class="conf" id="conf_med"> Je confirme les informations du médiateur</label>
+      </div>
     </div>
+    <div data-pour="bdc">
     <h3 class="sous">Vos qualifications RGE</h3>
     <p class="aide">Celles de votre société, à remplir dans tous les cas.</p>
     <div id="listeQ"></div>
@@ -264,9 +272,10 @@
       <label class="champ">N° de police *<input type="text" class="cgvc" data-bloc="ass" id="ass_num"></label>
     </div>
     <label class="validation"><input type="checkbox" class="conf" id="conf_ass"> Je confirme mon assurance décennale</label>
+    </div>
     <input type="hidden" id="PARTENAIRES_RGE"><input type="hidden" id="CGV_SOUS_TRAITANTS"><input type="hidden" id="MEDIATEUR"><input type="hidden" id="RGE_SOCIETE"><input type="hidden" id="ASSURANCE">
     <label class="validation" id="validationResp"><input type="checkbox" id="respCGV"> Je reconnais que les conditions générales de vente et les mentions légales (qualifications, assurance, sous-traitants, médiateur) relèvent de ma seule responsabilité. Imprigraphic les reproduit telles que je les ai saisies ou validées, sans en vérifier l’exactitude ni la conformité juridique.</label>
-    <div style="margin-top:12px"><p class="aide" style="margin:0 0 6px">Logos à afficher sur l’enveloppe et le bon de commande (cochez seulement les qualifications que vous détenez) :</p><div class="choix"><label class="puce"><input type="checkbox" id="rgePac"> Quali’PAC</label><label class="puce"><input type="checkbox" id="rgePv"> Quali’PV</label><label class="puce"><input type="checkbox" id="rgeQualibat"> Qualibat</label></div></div>
+    <div style="margin-top:12px"><p class="aide" id="aideLogosRGE" style="margin:0 0 6px">Logos à afficher sur l’enveloppe et le bon de commande (cochez seulement les qualifications que vous détenez) :</p><div class="choix"><label class="puce"><input type="checkbox" id="rgePac"> Quali’PAC</label><label class="puce"><input type="checkbox" id="rgePv"> Quali’PV</label><label class="puce"><input type="checkbox" id="rgeQualibat"> Qualibat</label></div></div>
   </section>
 
   <section>
@@ -408,6 +417,26 @@ function fichesChoisies() { const c = [...document.querySelectorAll("#fiches inp
 const FICHE = {}; D.fiches.forEach(f => FICHE[f.fichier] = f);
 function quantites() { const q = {}; document.querySelectorAll(".qte").forEach(i => { const n = i.value.replace(/\D/g, ""); if (n) q[i.dataset.doc] = +n; }); return q; }
 function docsChoisis() { return [...document.querySelectorAll("input[name=doc]:checked")].map(i => i.value); }
+// une information qui ne sert à aucun des documents choisis est masquée, et ni demandée ni envoyée
+function cache(el) { return !!(el && el.closest(".horsDocs")); }
+function majDocs(debut) {
+  const d = docsChoisis(), bdc = d.includes("bdc"), coord = bdc || d.includes("brochure");
+  document.querySelectorAll("[data-pour]").forEach(el => el.classList.toggle("horsDocs", !el.dataset.pour.split(" ").some(x => d.includes(x))));
+  const h = $("secCGV").querySelector("h2");
+  h.lastChild.textContent = bdc ? "Conditions générales de vente" : "Partenaires et logos RGE";
+  $("aideCGV").textContent = bdc ? "Ces informations sont imprimées dans les conditions générales de votre bon de commande. Chaque bloc doit être validé."
+                                 : "Ces informations sont imprimées sur votre enveloppe. Chaque bloc doit être validé.";
+  // sans brochure ni bon de commande, l'adresse du siège n'est pas demandée : on livre à une adresse saisie
+  const resp = bdc
+    ? "Je reconnais que les conditions générales de vente et les mentions légales (qualifications, assurance, sous-traitants, médiateur) relèvent de ma seule responsabilité. Imprigraphic les reproduit telles que je les ai saisies ou validées, sans en vérifier l’exactitude ni la conformité juridique."
+    : "Je reconnais que les partenaires et les qualifications RGE imprimés sur mon enveloppe relèvent de ma seule responsabilité. Imprigraphic les reproduit tels que je les ai saisis ou validés, sans en vérifier l’exactitude ni la conformité juridique.";
+  const lr = $("validationResp"); if (lr.lastChild.textContent.trim() !== resp) { lr.lastChild.textContent = " " + resp; if (!debut) $("respCGV").checked = false; }  // phrase changée par le client : à relire et recocher
+  $("aideLogosRGE").textContent = (bdc ? "Logos à afficher sur l’enveloppe et le bon de commande" : "Logos à afficher sur l’enveloppe") + " (cochez seulement les qualifications que vous détenez) :";
+  $("livSiegeLigne").classList.toggle("horsDocs", !coord);
+  if (!coord) $("livSiege").checked = false;
+  let n = 0;
+  document.querySelectorAll("main > section").forEach(sec => { if (!sec.classList.contains("horsDocs")) sec.querySelector("h2 span").textContent = ++n; });
+}
 
 // état initial
 if (s0) {
@@ -507,9 +536,9 @@ function majOrdre() {
   }
 }
 function deplacer(i, sens) { const j = i + sens; if (j < 0 || j >= ordre.length) return; [ordre[i], ordre[j]] = [ordre[j], ordre[i]]; majCompteurs(); sauver(); }
-document.addEventListener("change", () => { majCGV(); majPuces(); majCompteurs(); sauver(); });
+document.addEventListener("change", () => { majDocs(); majCGV(); majPuces(); majCompteurs(); sauver(); });
 document.addEventListener("input", e => { if (e.target.matches(".qte")) { e.target.classList.remove("invalide"); sauver(); return; } if (e.target.matches("input[type=text],input[type=email],input[type=tel],textarea")) { e.target.classList.remove("invalide"); sauver(); } });
-majCouleur(); majPuces(); majCompteurs();
+majDocs(true); majCouleur(); majPuces(); majCompteurs();
 
 // fichiers
 function depot(zone, input, max, quand) {
@@ -561,38 +590,43 @@ function luhn(n) { let s = 0; for (let i = 0; i < n.length; i++) { let d = +n[n.
 function message(t, c) { $("message").textContent = t; $("message").className = c || ""; }
 function verifier() {
   const err = [];
-  OBLIG.forEach(k => { if (!$(k).value.trim()) { $(k).classList.add("invalide"); err.push(k); } });
+  OBLIG.forEach(k => { if (!cache($(k)) && !$(k).value.trim()) { $(k).classList.add("invalide"); err.push(k); } });
   const siren = $("SIREN").value.replace(/\D/g, "");
-  if (siren && (siren.length !== 9 || !luhn(siren))) { $("SIREN").classList.add("invalide"); err.push("SIREN invalide"); }
+  if (!cache($("SIREN")) && siren && (siren.length !== 9 || !luhn(siren))) { $("SIREN").classList.add("invalide"); err.push("SIREN invalide"); }
   const siret = $("SIRET").value.replace(/\D/g, "");
-  if (siret && (siret.length !== 14 || siret.slice(0, 9) !== siren)) { $("SIRET").classList.add("invalide"); err.push("SIRET invalide"); }
-  if ($("EMAIL").value && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($("EMAIL").value)) { $("EMAIL").classList.add("invalide"); err.push("e-mail"); }
+  if (!cache($("SIRET")) && siret && (siret.length !== 14 || siret.slice(0, 9) !== siren)) { $("SIRET").classList.add("invalide"); err.push("SIRET invalide"); }
+  if (!cache($("EMAIL")) && $("EMAIL").value && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($("EMAIL").value)) { $("EMAIL").classList.add("invalide"); err.push("e-mail"); }
   if (!logo && modeLogo() === "ici") { $("depotLogo").classList.add("invalide"); err.push("logo"); }
   if (!docsChoisis().length) err.push("documents");
-  if (!$("respCGV").checked) { $("validationResp").classList.add("invalide"); err.push("responsabilité CGV"); }
+  if (!cache($("respCGV")) && !$("respCGV").checked) { $("validationResp").classList.add("invalide"); err.push("responsabilité CGV"); }
   if (!$("certif").checked) { $("validationCertif").classList.add("invalide"); err.push("certification"); }
   // livraison et contact
   ["CMD_CONTACT", "CMD_TEL"].concat($("livSiege").checked ? [] : ["LIV_ADRESSE", "LIV_CP", "LIV_VILLE"]).forEach(k => { if (!$(k).value.trim()) { $(k).classList.add("invalide"); err.push(k); } });
   // CGV : chaque bloc rempli et confirmé
   const c = lireCGV(), rouge = el => { el.classList.add("invalide"); err.push("CGV"); };
   const vide = (sel, racine) => [...(racine || document).querySelectorAll(sel)].filter(i => !i.value.trim());
-  if (modeCGV() === "base") document.querySelectorAll(".valBase").forEach(x => { if (!x.checked) rouge(x.closest(".validation")); });
+  if (cache($("secCGV"))) {}
+  else if (modeCGV() === "base") document.querySelectorAll(".valBase").forEach(x => { if (!cache(x) && !x.checked) rouge(x.closest(".validation")); });
   else {
-    if (!c.aucunST) {
+    if (!c.aucunST && !cache($("listeST"))) {
       if (!document.querySelector(".carteST")) ajouterST();
       document.querySelectorAll(".carteST").forEach(carte => {
         ["denom", "siret", "adresse", "travaux"].forEach(k => { const i = carte.querySelector(`input[data-k=${k}]`); if (!i.value.trim()) rouge(i); });
         if (!carte.querySelector(".confST").checked) rouge(carte.querySelector(".confST").closest(".validation"));
       });
     }
-    vide("#med_nom, #med_adresse").forEach(rouge);
-    if (!$("conf_med").checked) rouge($("conf_med").closest(".validation"));
+    if (!cache($("med_nom"))) {
+      vide("#med_nom, #med_adresse").forEach(rouge);
+      if (!$("conf_med").checked) rouge($("conf_med").closest(".validation"));
+    }
   }
-  if (!document.querySelector(".ligneQ")) ajouterQ();
-  document.querySelectorAll(".ligneQ").forEach(l => vide("input[data-k=nom], input[data-k=num]", l).forEach(rouge));
-  if (!$("conf_q").checked) rouge($("conf_q").closest(".validation"));
-  vide("#ass_nom, #ass_num").forEach(rouge);
-  if (!$("conf_ass").checked) rouge($("conf_ass").closest(".validation"));
+  if (!cache($("listeQ"))) {
+    if (!document.querySelector(".ligneQ")) ajouterQ();
+    document.querySelectorAll(".ligneQ").forEach(l => vide("input[data-k=nom], input[data-k=num]", l).forEach(rouge));
+    if (!$("conf_q").checked) rouge($("conf_q").closest(".validation"));
+    vide("#ass_nom, #ass_num").forEach(rouge);
+    if (!$("conf_ass").checked) rouge($("conf_ass").closest(".validation"));
+  }
   document.querySelectorAll(".qte").forEach(i => { if (!i.disabled && !i.value.replace(/\D/g, "")) { i.classList.add("invalide"); err.push("quantité"); } });
   return err;
 }
@@ -612,18 +646,19 @@ $("telecharger").onclick = () => {
 };
 function construireDossier() {
   composerCGV();
-  const societe = {}; CHAMPS.forEach(k => societe[k] = $(k).value.trim());
+  const societe = {}; CHAMPS.forEach(k => societe[k] = cache($(k)) ? "" : $(k).value.trim());
   const cmd = {}; COMMANDE.forEach(k => cmd[k] = $(k).value.trim()); cmd.livSiege = $("livSiege").checked;
   if (cmd.livSiege) { cmd.LIV_ADRESSE = societe.ADRESSE; cmd.LIV_CP = societe.CP; cmd.LIV_VILLE = societe.VILLE; }
   const c = lireCGV(), confirmations = [];
-  if (modeCGV() === "base") document.querySelectorAll(".valBase").forEach(x => { if (x.checked) confirmations.push(x.closest(".validation").textContent.trim()); });
-  else { c.st.forEach((x, i) => { if (!c.aucunST && x.ok) confirmations.push("Je confirme les informations du sous-traitant " + (i + 1) + " (" + x.denom + ")"); }); if (c.aucunST) confirmations.push("Je n’ai aucun sous-traitant"); if (c.confMed) confirmations.push("Je confirme les informations du médiateur"); }
-  if (c.confQ) confirmations.push("Je confirme mes qualifications RGE"); if (c.confAss) confirmations.push("Je confirme mon assurance décennale");
+  if (cache($("secCGV"))) {}
+  else if (modeCGV() === "base") document.querySelectorAll(".valBase").forEach(x => { if (!cache(x) && x.checked) confirmations.push(x.closest(".validation").textContent.trim()); });
+  else { c.st.forEach((x, i) => { if (!c.aucunST && x.ok) confirmations.push("Je confirme les informations du sous-traitant " + (i + 1) + " (" + x.denom + ")"); }); if (c.aucunST) confirmations.push("Je n’ai aucun sous-traitant"); if (c.confMed && !cache($("med_nom"))) confirmations.push("Je confirme les informations du médiateur"); }
+  if (!cache($("listeQ"))) { if (c.confQ) confirmations.push("Je confirme mes qualifications RGE"); if (c.confAss) confirmations.push("Je confirme mon assurance décennale"); }
   const hex = $("couleur").value, rvb = [1, 3, 5].map(i => parseInt(hex.substr(i, 2), 16));
   return {type: "kit-renovation-brief", version: 2, cgv: modeCGV(), date: new Date().toISOString().slice(0, 10), horodatage: new Date().toISOString(), societe, logo: modeLogo() === "ici" ? logo : null, logoAPart: modeLogo() === "part",
     photo: document.querySelector("input[name=photo]:checked").value === "perso" ? photo : null,
-    couleurRVB: document.querySelector("input[name=modeCouleur]:checked").value === "perso" ? rvb : null, villes: villesChoisies(), fiches: fichesChoisies(), documents: docsChoisis(), quantites: quantites(), rge: {pac: $("rgePac").checked, pv: $("rgePv").checked, qualibat: $("rgeQualibat").checked}, cgvValide: modeCGV() === "base" && [...document.querySelectorAll(".valBase")].every(x => x.checked), cgvDetail: c, cgvConfirmations: confirmations, commande: cmd,
-    modeleBDC: document.querySelector("input[name=modeleBDC]:checked").value, certifie: $("certif").checked, responsabiliteCGV: $("respCGV").checked};
+    couleurRVB: document.querySelector("input[name=modeCouleur]:checked").value === "perso" ? rvb : null, villes: villesChoisies(), fiches: fichesChoisies(), documents: docsChoisis(), quantites: quantites(), rge: cache($("rgePac")) ? {pac: false, pv: false, qualibat: false} : {pac: $("rgePac").checked, pv: $("rgePv").checked, qualibat: $("rgeQualibat").checked}, cgvValide: modeCGV() === "base" && [...document.querySelectorAll(".valBase")].filter(x => !cache(x)).every(x => x.checked), cgvDetail: c, cgvConfirmations: confirmations, commande: cmd,
+    modeleBDC: document.querySelector("input[name=modeleBDC]:checked").value, certifie: $("certif").checked, responsabiliteCGV: !cache($("respCGV")) && $("respCGV").checked, responsabiliteTexte: cache($("respCGV")) ? "" : $("validationResp").textContent.trim()};
 }
 // dossier : texte encodé (pas lisible d'un coup d'œil), avec l'empreinte du contenu pour détecter un fichier abîmé
 async function encoder(texte) {
@@ -662,7 +697,7 @@ function ficheCommande(b, code) {
   }
   const col = (W - 2 * M - 10) / 2, x2 = M + col + 10;
   titre(M, y, "CLIENT"); titre(x2, y, "CONTACT ET LIVRAISON");
-  const h1 = bloc(M, y, col, [["Raison sociale", so.NOM.toUpperCase()], ["Forme juridique / capital", [so.FORME, so.CAPITAL].filter(Boolean).join("  ·  ")], ["Siège", so.ADRESSE + ", " + so.CP + " " + so.VILLE], ["SIREN / SIRET", so.SIREN + (so.SIRET ? "  /  " + so.SIRET : "")], ["N° de TVA", so.TVA || "à calculer depuis le SIREN"], ["Téléphone / e-mail", so.TEL + "  ·  " + so.EMAIL], ["Représentant", so.QUALITE + " " + so.REPRESENTANT]]);
+  const h1 = bloc(M, y, col, [["Raison sociale", so.NOM.toUpperCase()], ["Forme juridique / capital", [so.FORME, so.CAPITAL].filter(Boolean).join("  ·  ")], ["Siège", so.ADRESSE ? so.ADRESSE + ", " + so.CP + " " + so.VILLE : ""], ["SIREN / SIRET", so.SIREN + (so.SIRET ? "  /  " + so.SIRET : "")], ["N° de TVA", so.TVA || (so.SIREN && b.documents.includes("bdc") ? "à calculer depuis le SIREN" : "")], ["Téléphone / e-mail", [so.TEL, so.EMAIL].filter(Boolean).join("  ·  ")], ["Représentant", so.REPRESENTANT ? so.QUALITE + " " + so.REPRESENTANT : ""]]);
   const h2 = bloc(x2, y, col, [["Contact pour la commande", c.CMD_CONTACT], ["Téléphone", c.CMD_TEL], ["E-mail", c.CMD_EMAIL], ["Adresse de livraison", (c.livSiege ? "Siège : " : "") + c.LIV_ADRESSE + ", " + c.LIV_CP + " " + c.LIV_VILLE], ["Précisions", c.LIV_INFOS]]);
   y = Math.max(h1, h2) + 6;
   // tableau de la commande
@@ -683,7 +718,7 @@ function ficheCommande(b, code) {
   // contenu et fichiers
   titre(M, y, "CONTENU"); titre(x2, y, "FICHIERS DU CLIENT");
   const fichesTxt = ch.debuts.map(d => "p. " + d.page + (d.f.pages > 1 ? "-" + (d.page + d.f.pages - 1) : "") + "  " + d.f.titre).join("\n");
-  const h3 = bloc(M, y, col, [["Brochure", b.documents.includes("brochure") ? ch.pages.length + " pages, dont " + nbF + " de fiches produits" + (nbN ? " et " + nbN + " de notes" : "") : ""], ["Fiches produits, dans l'ordre", fichesTxt], ["Carte", b.villes.length + " ville(s)"]]);
+  const h3 = bloc(M, y, col, [["Brochure", b.documents.includes("brochure") ? ch.pages.length + " pages, dont " + nbF + " de fiches produits" + (nbN ? " et " + nbN + " de notes" : "") : ""], ["Fiches produits, dans l'ordre", b.documents.includes("brochure") ? fichesTxt : ""], ["Carte", b.documents.includes("brochure") || b.documents.includes("bdc") ? b.villes.length + " ville(s)" : ""]]);
   const h4 = bloc(x2, y, col, [["Logo", b.logo ? "joint au dossier (" + b.logo.nom + ")" : "ENVOYÉ À PART par le client"], ["Photo de couverture", b.photo ? "fournie (" + b.photo.nom + ")" : "choisie par le studio"], ["Couleur", b.couleurRVB ? $("couleur").value.toUpperCase() : "choisie par le studio"], ["Logos de qualification", [b.rge.pac && "Quali'PAC", b.rge.pv && "Quali'PV", b.rge.qualibat && "Qualibat"].filter(Boolean).join(", ") || "aucun"]]);
   if (b.couleurRVB && pos.Couleur) { pdf.setFont("helvetica", "bold"); pdf.setFontSize(9.5); pdf.setFillColor(...b.couleurRVB); pdf.roundedRect(pos.Couleur[0] + pdf.getTextWidth($("couleur").value.toUpperCase()) + 3, pos.Couleur[1] - 3.4, 9, 4.2, 0.8, 0.8, "F"); }
   // pied de page
